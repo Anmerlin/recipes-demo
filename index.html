@@ -4,16 +4,81 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Recipes</title>
+    <link rel="stylesheet" href="css/style.css">
   </head>
   <body>
-    <header>
-      <h1>Recipes</h1>
+    <header class="site-header">
+      <div class="container site-header__inner">
+        <a class="logo" href="#">Recipes</a>
+
+        <nav class="main-nav" aria-label="Основная навигация">
+          <ul class="main-nav__list">
+            <li><a class="main-nav__link main-nav__link--active" href="#">Главная</a></li>
+            <li><a class="main-nav__link" href="#">Рецепты</a></li>
+            <li><a class="main-nav__link" href="#">Избранное</a></li>
+          </ul>
+        </nav>
+
+        <a class="login-link" href="#">Войти</a>
+      </div>
     </header>
 
     <main>
-      <section>
-        <h2>Готовь и делись рецептами</h2>
-        <p>Учебный проект сервиса рецептов.</p>
+      <section class="hero">
+        <div class="container hero__inner">
+          <div class="hero__content">
+            <h1 class="hero__title">Готовь и делись рецептами</h1>
+            <p class="hero__text">
+              Никаких кулинарных книг и блокнотов! Храни все любимые рецепты в одном месте.
+            </p>
+
+            <div class="hero__actions">
+              <a class="button button--primary" href="#">Добавить рецепт</a>
+              <a class="button button--secondary" href="#">Войти</a>
+            </div>
+          </div>
+
+          <div class="hero__image" aria-label="Фотография блюда из макета Figma">
+            <span>Изображение будет добавлено на следующем этапе</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="categories">
+        <div class="container">
+          <div class="categories__intro">
+            <h2 class="categories__title">Умная сортировка по тегам</h2>
+            <p class="categories__text">
+              Добавляй рецепты и указывай наиболее популярные теги. Это позволит быстро находить любые категории.
+            </p>
+          </div>
+
+          <ul class="categories__list">
+            <li class="category-card">
+              <div class="category-card__icon" aria-hidden="true">01</div>
+              <h3 class="category-card__title">Простые блюда</h3>
+              <p class="category-card__text">Время приготовления таких блюд не более 1 часа</p>
+            </li>
+
+            <li class="category-card">
+              <div class="category-card__icon" aria-hidden="true">02</div>
+              <h3 class="category-card__title">Детское</h3>
+              <p class="category-card__text">Самые полезные блюда, которые можно детям любого возраста</p>
+            </li>
+
+            <li class="category-card">
+              <div class="category-card__icon" aria-hidden="true">03</div>
+              <h3 class="category-card__title">От шеф-поваров</h3>
+              <p class="category-card__text">Требуют умения, времени и терпения, зато как в ресторане</p>
+            </li>
+
+            <li class="category-card">
+              <div class="category-card__icon" aria-hidden="true">04</div>
+              <h3 class="category-card__title">На праздник</h3>
+              <p class="category-card__text">Чем удивить гостей, чтобы все были сыты за праздничным столом</p>
+            </li>
+          </ul>
+        </div>
       </section>
     </main>
   </body>
