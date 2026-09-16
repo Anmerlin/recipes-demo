@@ -36,7 +36,7 @@
 
         <ul>
           <li>
-            <h3>Простые блюда</h3>
+            <h3>Простые блюда для быстрого приготовления дома каждый день</h3>
             <p>Время приготовления таких блюд не более 1 часа.</p>
           </li>
           <li>
@@ -58,6 +58,7 @@
         <h2 id="featured-title">Рецепт дня</h2>
 
         <article>
+          <img src="assets/images/pumpkin-soup.svg" alt="Тыквенный суп-пюре в миске">
           <h3>Тыквенный супчик на кокосовом молоке</h3>
           <p>Если у вас осталась тыква, и вы не знаете что с ней сделать, то это решение для вас! Ароматный, согревающий суп-пюре на кокосовом молоке. Можно даже в Пост!</p>
           <p>Автор: <a href="#author-glazest">@glazest</a></p>
@@ -67,6 +68,21 @@
       <section id="search" aria-labelledby="search-title">
         <h2 id="search-title">Поиск рецептов</h2>
         <p>Введите примерное название блюда, а мы по тегам найдём его.</p>
+
+        <form action="#search-results" method="get" role="search">
+          <label for="recipe-query">Название блюда</label>
+          <input
+            type="search"
+            id="recipe-query"
+            name="query"
+            placeholder="Название блюда..."
+            required
+            autocomplete="off"
+          >
+          <button type="submit">Поиск</button>
+        </form>
+
+        <p>Популярные теги: Мясо, Деликатесы, Пироги, Рыба.</p>
       </section>
     </main>
 
