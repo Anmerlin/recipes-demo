@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640" role="img" aria-labelledby="title desc">
+  <title id="title">Тыквенный суп-пюре</title>
+  <desc id="desc">Иллюстрация миски с оранжевым тыквенным супом и семечками.</desc>
+  <rect width="640" height="640" fill="#ece8df"/>
+  <circle cx="320" cy="320" r="230" fill="#f8f8f6" stroke="#405b8c" stroke-width="12"/>
+  <circle cx="320" cy="320" r="190" fill="#f5a000"/>
+  <ellipse cx="288" cy="300" rx="34" ry="18" fill="#fff7e8" transform="rotate(-20 288 300)"/>
+  <ellipse cx="332" cy="336" rx="30" ry="16" fill="#fff7e8" transform="rotate(25 332 336)"/>
+  <ellipse cx="360" cy="272" rx="11" ry="21" fill="#58683b" transform="rotate(35 360 272)"/>
+  <ellipse cx="392" cy="322" rx="11" ry="21" fill="#58683b" transform="rotate(-20 392 322)"/>
+  <ellipse cx="258" cy="360" rx="11" ry="21" fill="#58683b" transform="rotate(50 258 360)"/>
+  <circle cx="320" cy="320" r="5" fill="#b84b21"/>
+  <circle cx="348" cy="304" r="4" fill="#b84b21"/>
+  <circle cx="300" cy="344" r="4" fill="#b84b21"/>
+</svg>
