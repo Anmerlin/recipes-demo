@@ -8,7 +8,7 @@
 
 https://www.figma.com/design/v12mxS9VWlE3znKPd6qP8V/Recipes-_-Cooking-Website-Homepage--Copy---Copy-?node-id=0-1&p=f&t=QCswLcSvGbImYLL1-0
 
-Макет используется как источник структуры, контента и визуальных ориентиров. Реализация развивается только в пределах тем, уже пройденных на курсе.
+Для практики №3 также использованы ассеты из старого учебного проекта Recipes, переданного вместе с материалами курса. Это позволяет использовать оригинальные изображения, иконки и локальные шрифты, не завися от временных ссылок Figma.
 
 ## Текущий этап
 
@@ -17,17 +17,17 @@ https://www.figma.com/design/v12mxS9VWlE3znKPd6qP8V/Recipes-_-Cooking-Website-Ho
 На текущем этапе:
 
 - семантическая HTML-структура из практики №2 сохранена;
-- CSS разделён по ответственности: шрифты, базовая система, компоненты и layout;
-- `css/style.css` сохранён как базовый stylesheet практики;
-- добавлен глобальный `border-box`;
-- ключевые цвета, отступы и радиусы вынесены в CSS custom properties;
-- добавлены component classes по БЭМ в стиле `block__element--modifier`;
+- внешний CSS организован модульно;
+- `css/style.css` является единой точкой входа и через `@import` подключает тематические файлы;
+- добавлен глобальный `box-sizing: border-box`;
+- ключевые цвета, отступы, радиусы и тени вынесены в CSS custom properties;
+- компонентные классы оформлены по БЭМ в стиле `block__element--modifier`;
 - Flexbox используется для навигации, hero, групп кнопок, карточек, featured-рецепта, формы поиска и footer;
 - карточки не имеют фиксированной высоты и выдерживают длинный контент;
-- для ссылок, кнопок и поля поиска добавлены hover/focus-visible состояния;
-- добавлен второй локальный food-themed hero asset как временная замена изображения Figma;
-- подготовлено локальное подключение Montserrat через `@font-face`; файл шрифта копируется из старого архива в `assets/fonts/`;
-- Grid, media queries, JavaScript и сложные анимации намеренно не используются — это темы следующих этапов.
+- для ссылок, кнопок и поля поиска добавлены `hover` и `:focus-visible`;
+- используются оригинальные изображения и иконки Recipes из старого demo-проекта;
+- Montserrat подключён локально в весах 400, 500, 600 и 700;
+- Grid, media queries, JavaScript, popup и анимации из старого проекта намеренно не перенесены — это темы следующих этапов курса.
 
 ## Структура проекта
 
@@ -35,13 +35,22 @@ https://www.figma.com/design/v12mxS9VWlE3znKPd6qP8V/Recipes-_-Cooking-Website-Ho
 recipes-demo/
 ├── assets/
 │   ├── fonts/
-│   │   └── README.md
+│   │   ├── MontserratRegular.woff2
+│   │   ├── MontserratMedium.woff2
+│   │   ├── MontserratSemiBold.woff2
+│   │   └── MontserratBold.woff2
 │   └── images/
-│       ├── hero-recipe.svg
-│       └── pumpkin-soup.svg
+│       ├── icon/
+│       │   ├── chef.svg
+│       │   ├── cook.svg
+│       │   ├── fire.svg
+│       │   └── menu.svg
+│       ├── section1.webp
+│       └── section2.webp
 ├── css/
-│   ├── fonts.css
 │   ├── style.css
+│   ├── fonts.css
+│   ├── base.css
 │   ├── components.css
 │   └── layout.css
 ├── docs/
@@ -54,24 +63,50 @@ recipes-demo/
 
 ## Как устроен CSS
 
-Файлы подключаются в HTML явно, в порядке каскада:
+В HTML подключается только один файл:
 
-1. `fonts.css` — только `@font-face` и подключение локальных шрифтов;
-2. `style.css` — visual tokens, box-sizing, базовые элементы, container и общая типографика;
-3. `components.css` — визуальные стили BEM-компонентов и interactive states;
+```html
+<link rel="stylesheet" href="css/style.css">
+```
+
+`style.css` задаёт понятный порядок каскада:
+
+```css
+@import url("./fonts.css");
+@import url("./base.css");
+@import url("./components.css");
+@import url("./layout.css");
+```
+
+Ответственность разделена так:
+
+1. `fonts.css` — локальные `@font-face`;
+2. `base.css` — visual tokens, box model, базовые элементы, container и общая типографика;
+3. `components.css` — внешний вид БЭМ-компонентов и интерактивные состояния;
 4. `layout.css` — Flexbox, размеры секций и взаимное расположение компонентов.
 
-Такое разделение сохраняет внешний CSS из требований практики, но не превращает один файл в монолит по мере роста сквозного проекта.
+Так CSS остаётся внешним и соответствует требованиям практики, но не превращается в один монолитный файл по мере развития сквозного проекта.
 
 ## Шрифты
 
-Макет Recipes использует Montserrat. В `css/fonts.css` подготовлен `@font-face` для локального `assets/fonts/Montserrat-Regular.woff2` с `local()` fallback.
+Montserrat хранится локально в `assets/fonts/` и подключён в четырёх весах:
 
-Файл `Montserrat-Regular.woff2` берётся из старого учебного архива (`Example_buttons.zip`, `Example_img_background.zip` или `Example_modal_form.zip`) и помещается в `assets/fonts/`. В старых материалах есть только Regular; веса `600` и `700` пока синтезируются браузером. Когда появятся соответствующие файлы SemiBold/Bold, их можно добавить отдельными `@font-face` без изменения component CSS.
+- 400 — Regular;
+- 500 — Medium;
+- 600 — SemiBold;
+- 700 — Bold.
+
+Файлы взяты из старого учебного проекта Recipes. Внешний CDN для шрифтов не используется.
 
 ## Изображения
 
-`pumpkin-soup.svg` используется для карточки рецепта. Для hero добавлен локальный `hero-recipe.svg`. Это временный food-themed asset: когда экспорт исходного изображения Figma снова станет доступен, его можно заменить одним файлом без изменения HTML/BEM/CSS-структуры.
+В проект перенесены ассеты из старого Recipes:
+
+- `section1.webp` — hero-изображение;
+- `section2.webp` — изображение рецепта дня;
+- `menu.svg`, `cook.svg`, `chef.svg`, `fire.svg` — иконки категорий.
+
+Исходные PNG из старого проекта сохранены по содержанию в WebP, чтобы уменьшить вес учебного репозитория. Декоративные изображения и иконки имеют пустой `alt`; содержательное изображение рецепта — осмысленный `alt`.
 
 ## Технологии
 
@@ -82,6 +117,7 @@ recipes-demo/
 - CSS custom properties;
 - БЭМ (Two Dashes naming style);
 - Flexbox;
+- локальные web-fonts;
 - Git и GitHub;
 - GitHub Pull Requests;
 - GitHub Pages.
@@ -93,10 +129,7 @@ recipes-demo/
 Проект не использует сборщик и внешние зависимости.
 
 1. Клонировать репозиторий.
-2. Для локального Montserrat скопировать `Montserrat-Regular.woff2` из архива старого курса в `assets/fonts/`.
-3. Открыть файл `index.html` в браузере.
-
-Если локального font-файла пока нет, `fonts.css` сначала попробует установленный в системе Montserrat, затем сработает fallback из `font-family` страницы.
+2. Открыть файл `index.html` в браузере.
 
 Для проверки CSS рекомендуется использовать Chrome DevTools: `Elements`, `Styles`, `Computed` и Flexbox overlay.
 
@@ -118,4 +151,4 @@ https://anmerlin.github.io/recipes-demo/
 
 ## Использование AI
 
-AI используется как вспомогательный инструмент для анализа критериев практики, сопоставления Figma с CSS-системой, обсуждения BEM naming, диагностики box model/Flexbox и review изменений. Итоговые решения должны оставаться объяснимыми через HTML/CSS и DevTools; AI не используется для добавления тем следующих занятий.
+AI используется как вспомогательный инструмент для анализа критериев практики, сопоставления Figma и старого Recipes с текущей CSS-системой, обсуждения BEM naming, диагностики box model/Flexbox и review изменений. Итоговые решения должны оставаться объяснимыми через HTML/CSS и DevTools; AI не используется для добавления тем следующих занятий.
