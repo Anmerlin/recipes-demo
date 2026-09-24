@@ -21,7 +21,12 @@
           </ul>
         </nav>
 
-        <a class="site-header__login" href="#login">Войти</a>
+        <a class="site-header__login" href="#login">
+          <span class="site-header__login-icon" aria-hidden="true">
+            <img src="assets/images/icon/login.svg" alt="">
+          </span>
+          Войти
+        </a>
       </div>
     </header>
 
@@ -32,12 +37,19 @@
             <h1 class="hero__title" id="hero-title">Готовь и делись рецептами</h1>
             <p class="hero__lead">Никаких кулинарных книг и блокнотов! Храни все любимые рецепты в одном месте.</p>
             <div class="hero__actions">
-              <a class="button" href="#add-recipe">Добавить рецепт</a>
+              <a class="button button--add" href="#add-recipe">Добавить рецепт</a>
               <a class="button button--outline" href="#login">Войти</a>
             </div>
           </div>
+
           <div class="hero__media">
-            <img class="hero__image" src="assets/images/section1.webp" alt="">
+            <img
+              class="hero__image"
+              src="assets/images/section1.webp"
+              alt="Завтрак с тостами, яйцом и свежими овощами"
+              width="602"
+              height="800"
+            >
           </div>
         </div>
       </section>
@@ -57,6 +69,7 @@
               <h3 class="category-card__title">Простые блюда для быстрого приготовления дома каждый день</h3>
               <p class="category-card__text">Время приготовления таких блюд не более 1 часа.</p>
             </li>
+
             <li class="category-card">
               <span class="category-card__icon-wrap" aria-hidden="true">
                 <img class="category-card__icon" src="assets/images/icon/cook.svg" alt="">
@@ -64,6 +77,7 @@
               <h3 class="category-card__title">Детское</h3>
               <p class="category-card__text">Самые полезные блюда, которые можно детям любого возраста.</p>
             </li>
+
             <li class="category-card">
               <span class="category-card__icon-wrap" aria-hidden="true">
                 <img class="category-card__icon" src="assets/images/icon/chef.svg" alt="">
@@ -71,6 +85,7 @@
               <h3 class="category-card__title">От шеф-поваров</h3>
               <p class="category-card__text">Требуют умения, времени и терпения, зато как в ресторане.</p>
             </li>
+
             <li class="category-card">
               <span class="category-card__icon-wrap" aria-hidden="true">
                 <img class="category-card__icon" src="assets/images/icon/fire.svg" alt="">
@@ -86,12 +101,43 @@
         <div class="container">
           <h2 class="section-title" id="featured-title">Рецепт дня</h2>
 
+          <div class="recipe-meta" aria-label="Информация о рецепте">
+            <span class="recipe-meta__item">
+              <img class="recipe-meta__icon" src="assets/images/icon/heart.svg" alt="" width="20" height="19">
+              <span class="visually-hidden">Добавили в избранное:</span>
+              356
+            </span>
+            <span class="recipe-meta__item">
+              <img class="recipe-meta__icon" src="assets/images/icon/timer.svg" alt="" width="18" height="21">
+              <span class="visually-hidden">Время приготовления:</span>
+              35 минут
+            </span>
+          </div>
+
           <article class="recipe-card recipe-card--featured">
-            <img class="recipe-card__image" src="assets/images/section2.webp" alt="Тыквенный суп-пюре на кокосовом молоке в миске">
+            <div class="recipe-card__photo">
+              <img
+                class="recipe-card__image"
+                src="assets/images/section2.webp"
+                alt="Тыквенный суп-пюре на кокосовом молоке в миске"
+                width="543"
+                height="543"
+              >
+              <p class="recipe-card__author">
+                <a class="recipe-card__author-link" href="#author-glazest">@glazest</a>
+              </p>
+            </div>
+
             <div class="recipe-card__content">
+              <div class="recipe-day" aria-label="Рецепт дня">
+                <span class="recipe-day__icon" aria-hidden="true">
+                  <img src="assets/images/icon/smile.svg" alt="">
+                </span>
+                <span class="recipe-day__text">Рецепт дня</span>
+              </div>
+
               <h3 class="recipe-card__title">Тыквенный супчик на кокосовом молоке</h3>
               <p class="recipe-card__text">Если у вас осталась тыква, и вы не знаете что с ней сделать, то это решение для вас! Ароматный, согревающий суп-пюре на кокосовом молоке. Можно даже в Пост!</p>
-              <p class="recipe-card__author">Автор: <a class="recipe-card__author-link" href="#author-glazest">@glazest</a></p>
             </div>
           </article>
         </div>
@@ -104,7 +150,7 @@
 
           <form class="search-form" action="#search-results" method="get" role="search">
             <div class="search-form__field">
-              <label class="search-form__label" for="recipe-query">Название блюда</label>
+              <label class="search-form__label search-form__label--visually-hidden" for="recipe-query">Название блюда</label>
               <input
                 class="search-form__input"
                 type="search"
@@ -118,7 +164,12 @@
             <button class="button search-form__button" type="submit">Поиск</button>
           </form>
 
-          <p class="recipe-search__tags">Популярные теги: Мясо, Деликатесы, Пироги, Рыба.</p>
+          <ul class="recipe-search__tags" aria-label="Популярные теги">
+            <li>Мясо</li>
+            <li>Деликатесы</li>
+            <li>Пироги</li>
+            <li>Рыба</li>
+          </ul>
         </div>
       </section>
     </main>
