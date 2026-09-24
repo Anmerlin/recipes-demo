@@ -1,7 +1,6 @@
 .recipe-search {
   padding-block: 104px;
-
-  background-color: var(--color-surface);
+  background-color: var(--color-surface, #ffffff);
 }
 
 .recipe-search__inner {
@@ -15,7 +14,6 @@
 .recipe-search__lead {
   max-width: none;
   margin-inline: auto;
-
   font-family: "Mulish", "Arial", sans-serif;
   letter-spacing: 0.6px;
 }
@@ -26,9 +24,8 @@
   gap: 6px 13px;
   margin: 21px 0 0;
   padding: 0;
-
   font-size: 16px;
-  color: #808080;
+  color: var(--color-search-tags, #808080);
   list-style: none;
   text-align: left;
 }
