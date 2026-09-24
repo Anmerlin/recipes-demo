@@ -1,0 +1,27 @@
+.site-footer {
+  padding-block: 30px 37px;
+
+  background-color: #fbf9f4;
+}
+
+.site-footer__inner {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  align-items: center;
+  justify-content: space-between;
+}
+
+.site-footer__copyright {
+  margin: 0;
+
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 1.2;
+  color: var(--color-muted);
+}
+
+.site-footer__logo:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 4px;
+}
