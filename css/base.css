@@ -5,7 +5,8 @@
   --color-accent-hover: #e39f00;
   --color-accent-soft: #ffefcc;
   --color-surface: #ffffff;
-  --color-page: #fffdf8;
+  --color-page: #fefefb;
+  --color-footer: #fbf9f4;
   --color-border: #d9d9d9;
   --color-placeholder: #8b8f94;
   --color-focus: #6b8afd;
@@ -17,7 +18,7 @@
   --radius-control: 16px;
   --radius-card: 24px;
   --radius-image: 72px;
-  --shadow-card: 0 16px 72px rgba(34, 39, 47, 0.08);
+  --shadow-card: 0 16px 72px rgba(34, 39, 47, 0.05);
 }
 
 *,
@@ -26,12 +27,18 @@
   box-sizing: border-box;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   margin: 0;
+
   font-family: "Montserrat", "Arial", sans-serif;
   font-size: 18px;
-  line-height: 1.6;
-  color: var(--color-text);
+  line-height: 1.55;
+  color: var(--color-muted);
+
   background-color: var(--color-page);
 }
 
@@ -55,14 +62,18 @@ input {
   margin-inline: auto;
 }
 
-.section-title {
-  margin: 0;
-  font-size: 42px;
-  line-height: 1.3;
-}
+.visually-hidden {
+  position: absolute;
 
-.section-lead {
-  max-width: 700px;
-  margin: var(--space-2) 0 0;
-  color: var(--color-muted);
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+
+  white-space: nowrap;
+
+  clip-path: inset(100%);
+  clip: rect(0 0 0 0);
+  overflow: hidden;
 }
