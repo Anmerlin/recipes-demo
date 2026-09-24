@@ -1,0 +1,12 @@
+.site-header__logo,
+.site-footer__logo {
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--color-accent, #fdb100);
+  text-decoration: none;
+}
+
+.site-footer__logo {
+  font-size: 32px;
+}
