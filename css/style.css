@@ -1,4 +1,12 @@
 @import url("./fonts.css");
 @import url("./base.css");
-@import url("./components.css");
-@import url("./layout.css");
+@import url("./typography.css");
+@import url("./section.css");
+@import url("./logo.css");
+@import url("./header.css");
+@import url("./promo.css");
+@import url("./card.css");
+@import url("./recipe.css");
+@import url("./search.css");
+@import url("./form.css");
+@import url("./footer.css");
