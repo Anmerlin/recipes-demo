@@ -3,16 +3,15 @@
 }
 
 .featured-recipe > .container > .section-title {
-  margin-bottom: var(--space-4);
+  margin-bottom: var(--space-4, 32px);
 }
 
 .recipe-meta {
   display: flex;
   flex-wrap: wrap;
   gap: 16px 35px;
-  margin: 0 0 var(--space-3);
+  margin: 0 0 var(--space-3, 24px);
   justify-content: flex-end;
-
   font-size: 16px;
   line-height: 1.75;
 }
@@ -36,21 +35,19 @@
 
 .recipe-card__photo {
   position: relative;
-
   flex: 1 1 543px;
   max-width: 543px;
 }
 
 .recipe-card__image {
   width: 100%;
-  border-radius: var(--radius-image) 0 var(--radius-image) 0;
+  border-radius: var(--radius-image, 72px) 0 var(--radius-image, 72px) 0;
 }
 
 .recipe-card__author {
   position: absolute;
   bottom: 37px;
   left: 0;
-
   margin: 0;
 }
 
@@ -58,23 +55,21 @@
   display: inline-block;
   padding: 2px 16px;
   border-radius: 0 5px 5px 0;
-
   font-size: 16px;
   font-weight: 600;
   line-height: 1.75;
-  color: var(--color-accent);
+  color: var(--color-accent, #fdb100);
   text-decoration: none;
-
-  background-color: var(--color-surface);
+  background-color: var(--color-surface, #ffffff);
 }
 
 .recipe-card__author-link:hover {
-  color: var(--color-surface);
-  background-color: var(--color-accent);
+  color: var(--color-surface, #ffffff);
+  background-color: var(--color-accent, #fdb100);
 }
 
 .recipe-card__author-link:focus-visible {
-  outline: 3px solid var(--color-focus);
+  outline: 3px solid var(--color-focus, #6b8afd);
   outline-offset: 4px;
 }
 
@@ -89,10 +84,9 @@
   gap: 12px;
   margin-bottom: 27px;
   align-items: center;
-
   font-size: 18px;
   font-weight: 600;
-  color: var(--color-accent);
+  color: var(--color-accent, #fdb100);
 }
 
 .recipe-day__icon {
@@ -102,8 +96,7 @@
   border-radius: 50%;
   align-items: center;
   justify-content: center;
-
-  background-color: var(--color-accent);
+  background-color: var(--color-accent, #fdb100);
 }
 
 .recipe-day__icon img {
@@ -113,17 +106,15 @@
 
 .recipe-card__title {
   margin: 0;
-
   font-size: 42px;
   font-weight: 700;
   line-height: 1.43;
-  color: var(--color-text);
+  color: var(--color-text, #25292d);
   text-transform: capitalize;
 }
 
 .recipe-card__text {
-  margin: var(--space-3) 0 0;
-
+  margin: var(--space-3, 24px) 0 0;
   line-height: 1.75;
-  color: var(--color-muted);
+  color: var(--color-muted, #4a525a);
 }
