@@ -1,0 +1,129 @@
+.featured-recipe {
+  padding-block: 72px 104px;
+}
+
+.featured-recipe > .container > .section-title {
+  margin-bottom: var(--space-4);
+}
+
+.recipe-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px 35px;
+  margin: 0 0 var(--space-3);
+  justify-content: flex-end;
+
+  font-size: 16px;
+  line-height: 1.75;
+}
+
+.recipe-meta__item {
+  display: inline-flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.recipe-meta__icon {
+  flex: 0 0 auto;
+}
+
+.recipe-card {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 62px;
+  align-items: center;
+}
+
+.recipe-card__photo {
+  position: relative;
+
+  flex: 1 1 543px;
+  max-width: 543px;
+}
+
+.recipe-card__image {
+  width: 100%;
+  border-radius: var(--radius-image) 0 var(--radius-image) 0;
+}
+
+.recipe-card__author {
+  position: absolute;
+  bottom: 37px;
+  left: 0;
+
+  margin: 0;
+}
+
+.recipe-card__author-link {
+  display: inline-block;
+  padding: 2px 16px;
+  border-radius: 0 5px 5px 0;
+
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.75;
+  color: var(--color-accent);
+  text-decoration: none;
+
+  background-color: var(--color-surface);
+}
+
+.recipe-card__author-link:hover {
+  color: var(--color-surface);
+  background-color: var(--color-accent);
+}
+
+.recipe-card__author-link:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 4px;
+}
+
+.recipe-card__content {
+  flex: 1 1 420px;
+  min-width: 0;
+  max-width: 522px;
+}
+
+.recipe-day {
+  display: inline-flex;
+  gap: 12px;
+  margin-bottom: 27px;
+  align-items: center;
+
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--color-accent);
+}
+
+.recipe-day__icon {
+  display: inline-flex;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  align-items: center;
+  justify-content: center;
+
+  background-color: var(--color-accent);
+}
+
+.recipe-day__icon img {
+  width: 50px;
+  height: 51px;
+}
+
+.recipe-card__title {
+  margin: 0;
+
+  font-size: 42px;
+  font-weight: 700;
+  line-height: 1.43;
+  color: var(--color-text);
+  text-transform: capitalize;
+}
+
+.recipe-card__text {
+  margin: var(--space-3) 0 0;
+
+  line-height: 1.75;
+  color: var(--color-muted);
+}
