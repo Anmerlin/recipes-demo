@@ -1,0 +1,53 @@
+.logo {
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--color-accent);
+  text-decoration: none;
+}
+
+.button {
+  display: inline-flex;
+  min-height: 60px;
+  padding: 14px 32px;
+  border: 1px solid var(--color-accent);
+  border-radius: var(--radius-control);
+  align-items: center;
+  justify-content: center;
+
+  font-weight: 600;
+  color: var(--color-surface);
+  text-align: center;
+  text-decoration: none;
+
+  background-color: var(--color-accent);
+  cursor: pointer;
+}
+
+.button:hover {
+  border-color: var(--color-accent-hover);
+  background-color: var(--color-accent-hover);
+}
+
+.button:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 4px;
+}
+
+.button--outline {
+  color: var(--color-accent);
+  background-color: transparent;
+}
+
+.button--outline:hover {
+  color: var(--color-surface);
+}
+
+.button--add::before {
+  content: "+";
+  margin-right: 18px;
+
+  font-size: 26px;
+  font-weight: 400;
+  line-height: 1;
+}
