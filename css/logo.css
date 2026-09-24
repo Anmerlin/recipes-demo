@@ -3,7 +3,7 @@
   font-size: 24px;
   font-weight: 700;
   line-height: 1.2;
-  color: var(--color-accent);
+  color: var(--color-accent, #fdb100);
   text-decoration: none;
 }
 

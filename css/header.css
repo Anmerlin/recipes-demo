@@ -1,13 +1,12 @@
 .site-header {
   padding-block: 32px;
-
-  background-color: var(--color-surface);
+  background-color: var(--color-surface, #ffffff);
 }
 
 .site-header__inner {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-3) 80px;
+  gap: var(--space-3, 24px) 80px;
   align-items: center;
 }
 
@@ -18,10 +17,9 @@
 .main-nav__list {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-3) 40px;
+  gap: var(--space-3, 24px) 40px;
   margin: 0;
   padding: 0;
-
   list-style: none;
 }
 
@@ -32,18 +30,18 @@
 }
 
 .main-nav__link {
-  color: #9196a1;
+  color: var(--color-nav, #9196a1);
   text-decoration: none;
 }
 
 .main-nav__link:hover,
 .site-header__login:hover {
-  color: var(--color-text);
+  color: var(--color-text, #25292d);
 }
 
 .main-nav__link--current {
   font-weight: 600;
-  color: var(--color-text);
+  color: var(--color-text, #25292d);
 }
 
 .site-header__login {
@@ -51,9 +49,8 @@
   gap: 14px;
   margin-left: auto;
   align-items: center;
-
   font-weight: 600;
-  color: var(--color-accent);
+  color: var(--color-accent, #fdb100);
   text-decoration: none;
 }
 
@@ -64,8 +61,7 @@
   border-radius: 50%;
   align-items: center;
   justify-content: center;
-
-  background-color: var(--color-accent);
+  background-color: var(--color-accent, #fdb100);
 }
 
 .site-header__login-icon img {
@@ -76,6 +72,6 @@
 .main-nav__link:focus-visible,
 .site-header__logo:focus-visible,
 .site-header__login:focus-visible {
-  outline: 3px solid var(--color-focus);
+  outline: 3px solid var(--color-focus, #6b8afd);
   outline-offset: 4px;
 }
