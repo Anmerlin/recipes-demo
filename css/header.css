@@ -12,6 +12,7 @@
 
 .main-nav {
   flex: 1 1 420px;
+  min-width: 0;
 }
 
 .main-nav__list {
@@ -27,6 +28,7 @@
 .site-header__login {
   text-decoration-thickness: 2px;
   text-underline-offset: 5px;
+  transition: color 0.2s ease;
 }
 
 .main-nav__link {
@@ -62,6 +64,12 @@
   align-items: center;
   justify-content: center;
   background-color: var(--color-accent, #fdb100);
+  transition: transform 0.2s ease;
+}
+
+.site-header__login:hover .site-header__login-icon,
+.site-header__login:focus-visible .site-header__login-icon {
+  transform: scale(1.06);
 }
 
 .site-header__login-icon img {

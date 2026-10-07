@@ -1,0 +1,35 @@
+@media (min-width: 56rem) {
+  .hero__inner {
+    grid-template-columns: minmax(0, 1.08fr) minmax(18rem, 0.92fr);
+  }
+
+  .hero__media {
+    margin-inline: 0;
+    justify-self: end;
+  }
+
+  .recipe-card {
+    grid-template-columns: minmax(18rem, 543px) minmax(0, 1fr);
+  }
+
+  .recipe-card__photo {
+    margin-inline: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .button,
+  .button:hover,
+  .button:active,
+  .site-header__login-icon,
+  .site-header__login:hover .site-header__login-icon,
+  .site-header__login:focus-visible .site-header__login-icon,
+  .recipe-card__author-link {
+    transition: none;
+    transform: none;
+  }
+}

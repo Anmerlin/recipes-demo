@@ -7,8 +7,8 @@
 }
 
 .categories__list {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(16rem, 100%), 1fr));
   gap: 29px;
   margin: 0;
   padding: 0;
@@ -16,7 +16,6 @@
 }
 
 .category-card {
-  flex: 1 1 250px;
   min-width: 0;
   padding: 24px 24px 34px;
   border-radius: var(--radius-card, 24px);
@@ -46,9 +45,11 @@
   font-weight: 700;
   line-height: 1.25;
   color: var(--color-text, #25292d);
+  overflow-wrap: anywhere;
 }
 
 .category-card__text {
   margin: var(--space-2, 16px) 0 0;
   color: var(--color-muted, #4a525a);
+  overflow-wrap: anywhere;
 }
