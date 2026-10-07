@@ -7,79 +7,74 @@
 Основной макет — Recipes в Figma:
 https://www.figma.com/design/v12mxS9VWlE3znKPd6qP8V/Recipes-_-Cooking-Website-Homepage--Copy---Copy-?node-id=0-1&p=f&t=QCswLcSvGbImYLL1-0
 
-Для практики №3 дополнительно использован корректный архив старого demo-проекта Project.zip. Из него перенесены визуальные ассеты, локальные web-fonts и принцип разделения CSS по смысловым зонам.
+Для практики №4 дополнительно используется приложенный исходный проект `ProjectExampleJSFull.zip` как reference для уже существующего Recipes. Из него взяты исходные растровые изображения `section1.png` и `section2.png` без конвертации в WebP или другие форматы.
 
-Grid, media queries, animation, popup и JavaScript из старого проекта намеренно не переносятся: это темы следующих занятий.
+Существующие SVG-иконки интерфейса и локальные web-fonts из принятой практики №3 не конвертируются и не переписываются. JavaScript, popup, preloader, slider и сложные keyframe-animation из старого проекта не переносятся: они не относятся к обязательному результату практики №4.
 
 ## Текущий этап
 
-Практическая работа №3 — CSS-система, БЭМ и Flexbox.
+Практическая работа №4 — CSS Grid, responsive layout и transition.
 
 Реализовано:
 
-- семантический HTML практики №2 сохранён;
-- css/style.css — единая точка входа;
-- CSS разбит на тематические модули;
-- подключён normalize.css;
-- используется глобальный border-box;
-- visual tokens вынесены в CSS custom properties;
-- классы компонентов оформлены по БЭМ Two Dashes;
-- Flexbox используется для header, hero, категорий, рецепта, поиска и footer;
-- карточки сохраняют естественную высоту и длинный тестовый заголовок;
-- добавлены hover и focus-visible;
-- перенесены изображения и SVG-иконки Recipes;
-- локально подключены Montserrat 400/500/600/700 и Mulish 400;
-- добавлены login icon, метрики избранного/времени, автор на фотографии и badge «Рецепт дня».
+- семантическая HTML-структура предыдущих практик сохранена;
+- `css/style.css` остаётся единой точкой входа;
+- категории переведены на реальный CSS Grid;
+- карточная сетка использует `auto-fit + minmax()` и меняет число колонок по доступному пространству;
+- hero и блок рецепта используют Grid и переходят в двухколоночное состояние только там, где композиции достаточно места;
+- breakpoint `56rem` связан со сменой layout state, а не с названием устройства;
+- Flexbox сохранён в одномерных задачах: header/navigation, кнопки, meta, search form и footer;
+- размеры контейнера, заголовков и изображений остаются fluid;
+- добавлены `min-width: 0` и `overflow-wrap` там, где длинный контент может влиять на sizing;
+- `overflow-x: hidden` для маскировки проблем не используется;
+- добавлены transition для конкретных properties;
+- заметный `:focus-visible` сохранён;
+- для пространственного motion предусмотрен `prefers-reduced-motion`;
+- контентные изображения используются только как PNG и не конвертируются.
 
 ## Структура CSS
 
-HTML подключает один файл: css/style.css.
+HTML подключает один файл: `css/style.css`.
 
-style.css импортирует файлы в следующем порядке:
+`style.css` импортирует файлы в следующем порядке:
 
-1. fonts.css — web-fonts;
-2. normalize.css — нормализация;
-3. base.css — tokens, box model, базовые элементы и container;
-4. typography.css — общие кнопки и типографические элементы;
-5. section.css — общие заголовки/описания секций;
-6. logo.css — логотипы;
-7. header.css — header и navigation;
-8. promo.css — hero;
-9. card.css — карточки категорий;
-10. recipe.css — рецепт дня;
-11. search.css — поисковая секция;
-12. form.css — форма поиска;
-13. footer.css — footer.
+1. `fonts.css` — web-fonts;
+2. `normalize.css` — нормализация;
+3. `base.css` — tokens, box model, базовые элементы и fluid container;
+4. `typography.css` — кнопки и общая типографика;
+5. `section.css` — заголовки и описания секций;
+6. `logo.css` — логотипы;
+7. `header.css` — header и navigation;
+8. `promo.css` — hero;
+9. `card.css` — Grid карточек категорий;
+10. `recipe.css` — рецепт дня;
+11. `search.css` — поисковая секция;
+12. `form.css` — форма поиска;
+13. `footer.css` — footer;
+14. `responsive.css` — content-driven breakpoint и reduced-motion override.
 
-Так сохраняется единая точка подключения, но CSS сквозного проекта не превращается в один монолитный файл.
-
-На текущем учебном этапе `@import` используется намеренно: сборщик и bundling ещё не входят в курс, а студентам важно видеть порядок подключения CSS-модулей и влияние source order на каскад. На последующих этапах этот способ может быть заменён вместе с введением соответствующего инструментария. `normalize.css` хранится как неизменённая официальная версия v8.0.1; проектные базовые правила находятся в `base.css`.
+Обязательного отдельного responsive-файла в курсе нет; здесь он сохранён как небольшой завершающий модуль, потому что переключение состояния затрагивает несколько компонентов.
 
 ## Ассеты
 
-Из Project.zip используются:
+Растровые контентные изображения:
 
-- section1.webp — hero;
-- section2.webp — рецепт дня;
-- menu.svg, cook.svg, chef.svg, fire.svg — категории;
-- login.svg — вход;
-- heart.svg — избранное;
-- timer.svg — время приготовления;
-- smile.svg — badge рецепта дня.
+- `section1.png` — hero, 602×800;
+- `section2.png` — рецепт дня, 543×543.
 
-close.svg не переносится, потому что относится к popup. Остальные неиспользуемые декоративные ассеты также не добавляются без необходимости.
+Оба файла взяты из приложенного исходного проекта в PNG без дополнительной конвертации.
+
+Существующие SVG-иконки категорий, login, heart, timer и smile остаются из принятой практики №3 как интерфейсные иконки; в рамках практики №4 они не преобразуются в другие форматы.
 
 ## Шрифты
 
-В assets/fonts находятся локальные файлы:
+В `assets/fonts` остаются локальные файлы:
 
 - Montserrat Regular — 400;
 - Montserrat Medium — 500;
 - Montserrat SemiBold — 600;
 - Montserrat Bold — 700;
 - Mulish Regular — 400.
-
-Для учебного репозитория допускаются оптимизированные subset-версии соответствующих начертаний при сохранении нужных кириллических и латинских глифов.
 
 ## Технологии
 
@@ -90,29 +85,52 @@ close.svg не переносится, потому что относится к
 - CSS custom properties;
 - БЭМ;
 - Flexbox;
+- CSS Grid;
+- responsive design;
+- media queries;
+- CSS transitions;
+- `prefers-reduced-motion`;
 - локальные web-fonts;
 - Git/GitHub;
 - Pull Requests;
 - GitHub Pages.
+
+JavaScript пока не добавляется.
 
 ## Запуск
 
 Проект не использует сборщик.
 
 1. Клонировать репозиторий.
-2. Открыть index.html в браузере.
-3. Для проверки CSS использовать Chrome DevTools: Elements, Styles, Computed и Flexbox overlay.
+2. Открыть `index.html` в браузере.
+3. Для проверки открыть Chrome DevTools.
+
+Для практики №4 полезно проверить:
+
+- плавный resize от узкой до широкой ширины;
+- Grid overlay для `.categories__list`;
+- Styles/Computed для Grid и media query;
+- длинный заголовок/описание;
+- Tab-navigation и `:focus-visible`;
+- отсутствие необъяснимого horizontal overflow;
+- `prefers-reduced-motion: reduce`.
+
+Контрольные ширины 390 / 768 / 1280 можно использовать для проверки, но они не являются значениями обязательных breakpoints.
 
 ## Опубликованная версия
 
 https://anmerlin.github.io/recipes-demo/
 
-GitHub Pages автоматически обновляется после merge в main.
+GitHub Pages обновляется только после merge в `main`. Pull Request практики №4 до проверки не merge.
 
 ## Работа с ветками
 
-Основная ветка — main. Практика №3 выполняется в lab/03-css и объединяется с main только после review.
+Основная ветка — `main`.
+
+Практика №4 выполняется в `lab/04-responsive` и направляется Pull Request в `main`. Исправления review выполняются в той же ветке.
 
 ## Использование AI
 
-AI используется как вспомогательный инструмент для анализа критериев практики, сопоставления Figma и старого Recipes, обсуждения BEM naming, диагностики box model/Flexbox и review изменений. Решения должны оставаться объяснимыми через HTML/CSS и DevTools.
+AI используется как вспомогательный инструмент для сопоставления критериев практики №4 с текущим demo-проектом, выбора Grid/Flexbox, проверки responsive strategy и поиска рисков overflow.
+
+В этой итерации предложения AI ограничены темами лекции №4: Grid, intrinsic/fluid sizing, media queries, transition и reduced motion. JavaScript и другие следующие темы намеренно не добавлялись. Результат проверяется по фактическому CSS и поведению layout, а не принимается автоматически.
