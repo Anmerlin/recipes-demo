@@ -3,6 +3,8 @@
   Контент страницы не скрывается: прелоадер лежит поверх него
   и исчезает, когда JavaScript получает событие load.
   Без JavaScript прелоадер отключает <noscript> в <head>.
+  Если скрипт не загрузился (404, ошибка сети), через 5 секунд
+  прелоадер скрывает CSS-страховка preloader-fallback.
 */
 .preloader {
   position: fixed;
@@ -15,6 +17,7 @@
   transition:
     opacity 0.5s ease,
     visibility 0.5s ease;
+  animation: preloader-fallback 0s 5s forwards;
 }
 
 .preloader--hidden {
@@ -31,9 +34,11 @@
   animation: spin 1s linear infinite;
 }
 
-/* Header выезжает после того, как прелоадер начал исчезать, а не под ним. */
-.page:has(> .preloader:not(.preloader--hidden)) .site-header {
-  animation-play-state: paused;
+@keyframes preloader-fallback {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
 }
 
 @keyframes spin {
@@ -43,9 +48,12 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .preloader,
-  .preloader__spinner {
+  /* Страховка preloader-fallback не отключается: это мгновенное скрытие, а не движение. */
+  .preloader {
     transition: none;
+  }
+
+  .preloader__spinner {
     animation: none;
   }
 }

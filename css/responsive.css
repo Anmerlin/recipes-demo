@@ -88,7 +88,7 @@
     scroll-behavior: auto;
   }
 
-  .site-header {
+  .site-header--enter {
     animation: none;
   }
 

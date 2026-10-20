@@ -1,7 +1,9 @@
 /*
   Как в исходном проекте: header закреплён у верхнего края окна,
   при загрузке выезжает сверху, после прокрутки на свою высоту
-  получает фон через модификатор --scroll (класс ставит JavaScript).
+  получает фон через модификатор --scroll.
+  Классы-модификаторы ставит JavaScript. Без них header просто стоит на месте,
+  поэтому при сбое скрипта он остаётся видимым.
 */
 .site-header {
   position: fixed;
@@ -10,10 +12,14 @@
   left: 0;
   z-index: 2;
   padding-block: 40px;
-  animation: show-header 0.8s ease-out both;
   transition:
     background-color 0.3s ease,
     box-shadow 0.3s ease;
+}
+
+/* Выезд запускается, когда скрывается прелоадер, а не под ним. */
+.site-header--enter {
+  animation: show-header 0.8s ease-out;
 }
 
 .site-header--scroll {

@@ -123,9 +123,27 @@ const preloader = document.querySelector('[data-preloader]');
 
 if (preloader) {
   const hidePreloader = () => {
+    // Если загрузка шла дольше 5 секунд, прелоадер уже скрыла CSS-страховка:
+    // header давно виден, поэтому без выезда просто убираем элемент.
+    if (getComputedStyle(preloader).visibility === 'hidden') {
+      preloader.remove();
+      return;
+    }
+
     preloader.classList.add('preloader--hidden');
-    // После завершения fade-out элемент больше не нужен в DOM.
-    preloader.addEventListener('transitionend', () => preloader.remove(), { once: true });
+
+    // После fade-out элемент больше не нужен в DOM.
+    // При prefers-reduced-motion transition отключён и transitionend не наступит — удаляем сразу.
+    if (parseFloat(getComputedStyle(preloader).transitionDuration) > 0) {
+      preloader.addEventListener('transitionend', () => preloader.remove(), { once: true });
+    } else {
+      preloader.remove();
+    }
+
+    // Header выезжает одновременно с исчезновением прелоадера.
+    if (header) {
+      header.classList.add('site-header--enter');
+    }
   };
 
   // load наступает после загрузки изображений, шрифтов и стилей,
