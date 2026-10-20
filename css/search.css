@@ -37,3 +37,21 @@
   list-style: none;
   text-align: left;
 }
+
+.recipe-search__tag--hidden {
+  display: none;
+}
+
+/* Пустой role="status" остаётся в DOM, чтобы скринридер объявил появившийся текст. */
+.recipe-search__status {
+  max-width: 884px;
+  margin: 24px auto 0;
+  font-size: 16px;
+  line-height: 18px;
+  color: var(--color-muted, #4a525a);
+  text-align: left;
+}
+
+.recipe-search__status:empty {
+  margin-top: 0;
+}

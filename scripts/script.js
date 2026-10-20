@@ -32,3 +32,32 @@ if (favoriteButton && favoriteCount) {
 
   renderFavorite();
 }
+
+/* 2. Фильтрация популярных тегов по тексту в поле поиска */
+
+const searchInput = document.querySelector('#recipe-query');
+const tags = document.querySelectorAll('[data-tag]');
+const tagsStatus = document.querySelector('[data-tags-status]');
+
+if (searchInput && tags.length > 0 && tagsStatus) {
+  const filterTags = () => {
+    // trim() убирает случайные пробелы, toLowerCase() делает сравнение без учёта регистра.
+    const query = searchInput.value.trim().toLowerCase();
+    let visibleCount = 0;
+
+    tags.forEach((tag) => {
+      const isMatch = tag.textContent.toLowerCase().includes(query);
+      tag.classList.toggle('recipe-search__tag--hidden', !isMatch);
+
+      if (isMatch) {
+        visibleCount += 1;
+      }
+    });
+
+    // Пустой ввод совпадает со всеми тегами, поэтому сообщение появляется только при нуле совпадений.
+    tagsStatus.textContent = visibleCount === 0 ? 'Теги не найдены' : '';
+  };
+
+  searchInput.addEventListener('input', filterTags);
+  filterTags();
+}
