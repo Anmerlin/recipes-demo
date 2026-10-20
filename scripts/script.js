@@ -78,7 +78,7 @@ if (searchInput && tags.length > 0 && tagsStatus) {
   filterTags();
 }
 
-/* 3. Header: фон после прокрутки на высоту header */
+/* 3. Header: фон после прокрутки на высоту header, скрытие при прокрутке вниз */
 
 const header = document.querySelector('.site-header');
 
@@ -94,6 +94,20 @@ if (header) {
   new ResizeObserver(updateHeaderHeight).observe(header);
 
   toggleClassOnScroll(header, 'site-header--scroll', () => header.offsetHeight);
+
+  // Направление прокрутки определяем сравнением с прошлым значением scrollY.
+  // Вниз (и header уже не в начале страницы) — прячем, вверх — показываем.
+  let lastScrollY = window.scrollY;
+
+  const updateHeaderVisibility = () => {
+    const currentScrollY = window.scrollY;
+    const isScrollingDown = currentScrollY > lastScrollY;
+
+    header.classList.toggle('site-header--hidden', isScrollingDown && currentScrollY > header.offsetHeight);
+    lastScrollY = currentScrollY;
+  };
+
+  window.addEventListener('scroll', updateHeaderVisibility, { passive: true });
 }
 
 /* 4. Кнопка «Наверх»: появляется после прокрутки на высоту окна */

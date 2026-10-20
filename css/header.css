@@ -2,6 +2,8 @@
   Как в исходном проекте: header закреплён у верхнего края окна,
   при загрузке выезжает сверху, после прокрутки на свою высоту
   получает фон через модификатор --scroll.
+  При прокрутке вниз header уезжает вверх (--hidden), при прокрутке вверх возвращается:
+  на узких экранах он занимает заметную часть окна.
   Классы-модификаторы ставит JavaScript. Без них header просто стоит на месте,
   поэтому при сбое скрипта он остаётся видимым.
 */
@@ -13,6 +15,7 @@
   z-index: 2;
   padding-block: 40px;
   transition:
+    transform 0.3s ease,
     background-color 0.3s ease,
     box-shadow 0.3s ease;
 }
@@ -25,6 +28,15 @@
 .site-header--scroll {
   background-color: var(--color-page, #fefefb);
   box-shadow: var(--shadow-control, 0 8px 42px rgba(34, 39, 47, 0.04));
+}
+
+.site-header--hidden {
+  transform: translateY(-100%);
+}
+
+/* Скрытый header остаётся в Tab-порядке: при фокусе внутри он возвращается. */
+.site-header:focus-within {
+  transform: none;
 }
 
 /*
