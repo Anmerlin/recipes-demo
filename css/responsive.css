@@ -1,5 +1,5 @@
 /*
-  Desktop-состояние (от 56rem): header ложится поверх hero,
+  Desktop-состояние (от 56rem): fixed header лежит поверх hero,
   фото hero доходит до правого края макета 1440px,
   счётчики рецепта встают на один уровень с фото.
   Ниже 56rem остаётся одноколоночный поток из практики №4.
@@ -16,12 +16,9 @@
     background-size: max(100%, 1440px) auto;
   }
 
-  .site-header {
-    position: absolute;
-    top: 0;
-    right: 0;
-    left: 0;
-    z-index: 1;
+  /* На desktop header лежит поверх hero, отступ под него не нужен. */
+  .page {
+    padding-top: 0;
   }
 
   .hero {
@@ -89,6 +86,17 @@
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
+  }
+
+  .site-header--enter {
+    animation: none;
+  }
+
+  /* Скрытие и появление header без движения. */
+  .site-header {
+    transition:
+      background-color 0.3s ease,
+      box-shadow 0.3s ease;
   }
 
   .button,

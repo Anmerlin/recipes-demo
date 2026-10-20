@@ -23,6 +23,42 @@
   flex: 0 0 auto;
 }
 
+/* Кнопка «В избранное»: цвет иконки задаётся через currentColor, состояние — модификатором. */
+.recipe-meta__favorite {
+  display: inline-flex;
+  width: 36px;
+  height: 36px;
+  margin: -8px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text, #25292d);
+  background-color: transparent;
+  cursor: pointer;
+  transition:
+    color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.recipe-meta__favorite svg {
+  fill: currentColor;
+}
+
+.recipe-meta__favorite:hover {
+  background-color: var(--color-accent-soft, #ffefcc);
+}
+
+.recipe-meta__favorite:focus-visible {
+  outline: 3px solid var(--color-focus, #6b8afd);
+  outline-offset: 2px;
+}
+
+.recipe-meta__favorite--active {
+  color: var(--color-favorite, #e5383b);
+}
+
 .recipe-card {
   display: grid;
   gap: clamp(32px, 6vw, 62px);

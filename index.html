@@ -5,8 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Recipes — рецепты для домашней кухни</title>
     <link rel="stylesheet" href="css/style.css">
+    <script src="scripts/script.js" defer></script>
+    <noscript>
+      <style>
+        .preloader {
+          display: none;
+        }
+      </style>
+    </noscript>
   </head>
   <body class="page">
+    <div class="preloader" aria-hidden="true" data-preloader>
+      <span class="preloader__spinner"></span>
+    </div>
+
     <header class="site-header">
       <div class="container site-header__inner">
         <a class="site-header__logo" href="index.html">Recipes</a>
@@ -103,9 +115,14 @@
 
           <div class="recipe-meta">
             <span class="recipe-meta__item">
-              <img class="recipe-meta__icon" src="assets/images/icon/heart.svg" alt="" width="20" height="19">
+              <button class="recipe-meta__favorite" type="button" aria-pressed="false" data-favorite-toggle>
+                <svg class="recipe-meta__icon" width="20" height="19" viewBox="0 0 20 19" aria-hidden="true" focusable="false">
+                  <path d="M14.5 0C12.76 0 11.09 0.81 10 2.09C8.91 0.81 7.24 0 5.5 0C2.42 0 0 2.42 0 5.5C0 9.28 3.4 12.36 8.55 17.04L10 18.35L11.45 17.03C16.6 12.36 20 9.28 20 5.5C20 2.42 17.58 0 14.5 0ZM10.1 15.55L10 15.65L9.9 15.55C5.14 11.24 2 8.39 2 5.5C2 3.5 3.5 2 5.5 2C7.04 2 8.54 2.99 9.07 4.36H10.94C11.46 2.99 12.96 2 14.5 2C16.5 2 18 3.5 18 5.5C18 8.39 14.86 11.24 10.1 15.55Z" />
+                </svg>
+                <span class="visually-hidden">В избранное</span>
+              </button>
               <span class="visually-hidden">Добавили в избранное:</span>
-              356
+              <span data-favorite-count>356</span>
             </span>
             <span class="recipe-meta__item">
               <img class="recipe-meta__icon" src="assets/images/icon/timer.svg" alt="" width="18" height="21">
@@ -170,11 +187,12 @@
           </form>
 
           <ul class="recipe-search__tags" aria-label="Популярные теги">
-            <li>Мясо</li>
-            <li>Деликатесы</li>
-            <li>Пироги</li>
-            <li>Рыба</li>
+            <li class="recipe-search__tag" data-tag>Мясо</li>
+            <li class="recipe-search__tag" data-tag>Деликатесы</li>
+            <li class="recipe-search__tag" data-tag>Пироги</li>
+            <li class="recipe-search__tag" data-tag>Рыба</li>
           </ul>
+          <p class="recipe-search__status" role="status" data-tags-status></p>
         </div>
       </section>
     </main>
@@ -185,5 +203,12 @@
         <p class="site-footer__copyright">© Recipes 2021</p>
       </div>
     </footer>
+
+    <button class="scroll-up" type="button" data-scroll-up>
+      <svg width="35" height="35" viewBox="0 0 15 15" aria-hidden="true" focusable="false">
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M11.1464 6.85355C11.3417 7.04882 11.6583 7.04882 11.8536 6.85355C12.0488 6.65829 12.0488 6.34171 11.8536 6.14645L7.85355 2.14645C7.65829 1.95118 7.34171 1.95118 7.14645 2.14645L3.14645 6.14645C2.95118 6.34171 2.95118 6.65829 3.14645 6.85355C3.34171 7.04882 3.65829 7.04882 3.85355 6.85355L7.5 3.20711L11.1464 6.85355ZM11.1464 12.8536C11.3417 13.0488 11.6583 13.0488 11.8536 12.8536C12.0488 12.6583 12.0488 12.3417 11.8536 12.1464L7.85355 8.14645C7.65829 7.95118 7.34171 7.95118 7.14645 8.14645L3.14645 12.1464C2.95118 12.3417 2.95118 12.6583 3.14645 12.8536C3.34171 13.0488 3.65829 13.0488 3.85355 12.8536L7.5 9.20711L11.1464 12.8536Z" />
+      </svg>
+      <span class="visually-hidden">Наверх</span>
+    </button>
   </body>
 </html>
