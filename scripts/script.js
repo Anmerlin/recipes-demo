@@ -95,3 +95,24 @@ if (header) {
 
   toggleClassOnScroll(header, 'site-header--scroll', () => header.offsetHeight);
 }
+
+/* 4. Кнопка «Наверх»: появляется после прокрутки на высоту окна */
+
+const scrollUpButton = document.querySelector('[data-scroll-up]');
+const headerLogo = document.querySelector('.site-header__logo');
+
+if (scrollUpButton) {
+  toggleClassOnScroll(scrollUpButton, 'scroll-up--show', () => document.documentElement.clientHeight);
+
+  scrollUpButton.addEventListener('click', () => {
+    // Без behavior: 'smooth' действует CSS scroll-behavior,
+    // который уже отключает плавность при prefers-reduced-motion.
+    window.scrollTo({ top: 0 });
+
+    // Наверху кнопка скрывается, поэтому фокус переносим на первый элемент страницы,
+    // иначе пользователь клавиатуры теряет позицию.
+    if (headerLogo) {
+      headerLogo.focus({ preventScroll: true });
+    }
+  });
+}

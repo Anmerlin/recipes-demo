@@ -1,0 +1,64 @@
+/*
+  Кнопка «Наверх» из исходного проекта.
+  По умолчанию скрыта: visibility: hidden убирает её и из порядка Tab.
+  Модификатор --show ставит JavaScript после прокрутки на высоту окна.
+*/
+.scroll-up {
+  position: fixed;
+  right: 16px;
+  bottom: 24px;
+  z-index: 2;
+  display: flex;
+  width: 50px;
+  height: 50px;
+  padding: 0;
+  border: 0;
+  border-radius: 5px;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-accent, #fdb100);
+  box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(24px);
+  transition:
+    opacity 0.3s ease,
+    visibility 0.3s ease,
+    transform 0.3s ease,
+    background-color 0.2s ease;
+}
+
+.scroll-up svg {
+  fill: var(--color-surface, #ffffff);
+}
+
+.scroll-up--show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.scroll-up:hover {
+  background-color: var(--color-accent-hover, #e39f00);
+}
+
+.scroll-up:focus-visible {
+  outline: 3px solid var(--color-focus, #6b8afd);
+  outline-offset: 4px;
+}
+
+@media (min-width: 56rem) {
+  .scroll-up {
+    right: 50px;
+    bottom: 115px;
+    width: 60px;
+    height: 60px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-up {
+    transform: none;
+  }
+}
