@@ -1,6 +1,5 @@
 .site-header {
-  padding-block: 32px;
-  background-color: var(--color-surface, #ffffff);
+  padding-block: 40px;
 }
 
 .site-header__inner {
@@ -32,6 +31,7 @@
 }
 
 .main-nav__link {
+  line-height: 1.2;
   color: var(--color-nav, #9196a1);
   text-decoration: none;
 }
@@ -43,7 +43,7 @@
 
 .main-nav__link--current {
   font-weight: 600;
-  color: var(--color-text, #25292d);
+  color: var(--color-nav-current, #3a3c41);
 }
 
 .site-header__login {
@@ -52,6 +52,7 @@
   margin-left: auto;
   align-items: center;
   font-weight: 600;
+  line-height: 1.2;
   color: var(--color-accent, #fdb100);
   text-decoration: none;
 }

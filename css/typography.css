@@ -8,6 +8,7 @@
   justify-content: center;
 
   font-weight: 600;
+  line-height: 28px;
   color: var(--color-surface, #ffffff);
   text-align: center;
   text-decoration: none;
@@ -37,6 +38,7 @@
 }
 
 .button--outline {
+  min-width: 216px;
   color: var(--color-accent, #fdb100);
   background-color: transparent;
 }
@@ -45,11 +47,15 @@
   color: var(--color-surface, #ffffff);
 }
 
+.button--add {
+  padding-inline: 36px 33px;
+}
+
 .button--add::before {
   content: "+";
-  margin-right: 18px;
+  margin-right: 21px;
 
-  font-size: 26px;
+  font-size: 33px;
   font-weight: 400;
-  line-height: 1;
+  line-height: 28px;
 }

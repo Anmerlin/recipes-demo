@@ -1,19 +1,88 @@
+/*
+  Desktop-состояние (от 56rem): header ложится поверх hero,
+  фото hero доходит до правого края макета 1440px,
+  счётчики рецепта встают на один уровень с фото.
+  Ниже 56rem остаётся одноколоночный поток из практики №4.
+*/
 @media (min-width: 56rem) {
+  .page {
+    background-image:
+      url("../assets/images/wave1.png"),
+      url("../assets/images/wave2.png");
+    background-repeat: no-repeat;
+    background-position:
+      center 90px,
+      center 1143px;
+    background-size: max(100%, 1440px) auto;
+  }
+
+  .site-header {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 1;
+  }
+
+  .hero {
+    padding-block: 0;
+  }
+
+  /*
+    Сетка hero шире общего контейнера: слева контент выровнен по контейнеру 1200px,
+    справа фото прижато к краю области 1440px (как в макете и в исходном проекте).
+  */
   .hero__inner {
-    grid-template-columns: minmax(0, 1.08fr) minmax(18rem, 0.92fr);
+    width: min(100%, 1440px);
+    padding-left: max(16px, (min(100%, 1440px) - 1200px) / 2);
+    grid-template-columns: minmax(0, 688fr) minmax(0, 602fr);
+    column-gap: 30px;
+    align-items: start;
+  }
+
+  .hero__content {
+    padding-top: clamp(140px, 14.65vw, 211px);
   }
 
   .hero__media {
+    max-width: none;
     margin-inline: 0;
+  }
+
+  .featured-recipe .container {
+    display: grid;
+  }
+
+  /* Счётчики и карточка рецепта занимают одну ячейку сетки: счётчики сверху справа. */
+  .recipe-meta,
+  .recipe-card {
+    grid-area: 1 / 1;
+  }
+
+  .recipe-meta {
+    z-index: 1;
+    margin: 0 52px 0 0;
     justify-self: end;
+    align-self: start;
   }
 
   .recipe-card {
     grid-template-columns: minmax(18rem, 543px) minmax(0, 1fr);
+    column-gap: clamp(32px, 5.07vw, 73px);
+    align-items: start;
   }
 
   .recipe-card__photo {
     margin-inline: 0;
+  }
+
+  .recipe-card__content {
+    padding-top: 51px;
+  }
+
+  /* Как в макете и исходном проекте: дуга бейджа выступает на 11px левее заголовка. */
+  .recipe-day {
+    margin-left: -11px;
   }
 }
 

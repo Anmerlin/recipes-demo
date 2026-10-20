@@ -2,6 +2,7 @@
   --color-text: #25292d;
   --color-muted: #4a525a;
   --color-nav: #9196a1;
+  --color-nav-current: #3a3c41;
   --color-search-tags: #808080;
   --color-accent: #fdb100;
   --color-accent-hover: #e39f00;
@@ -19,6 +20,7 @@
   --radius-card: 24px;
   --radius-image: 72px;
   --shadow-card: 0 16px 72px rgba(34, 39, 47, 0.05);
+  --shadow-control: 0 8px 42px rgba(34, 39, 47, 0.04);
 }
 
 *,
