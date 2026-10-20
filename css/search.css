@@ -1,6 +1,5 @@
 .recipe-search {
-  padding-block: 104px;
-  background-color: var(--color-surface, #ffffff);
+  padding-block: clamp(72px, 10.4vw, 150px) clamp(64px, 7.36vw, 106px);
 }
 
 .recipe-search__inner {
@@ -9,6 +8,7 @@
 
 .recipe-search__title {
   max-width: none;
+  line-height: 1.22;
 }
 
 .recipe-search__lead {
@@ -18,13 +18,21 @@
   letter-spacing: 0.6px;
 }
 
+.recipe-search .search-form,
+.recipe-search__tags {
+  max-width: 884px;
+  margin-inline: auto;
+}
+
 .recipe-search__tags {
   display: flex;
   flex-wrap: wrap;
   gap: 6px 13px;
-  margin: 21px 0 0;
+  margin-top: 24px;
+  margin-bottom: 0;
   padding: 0;
   font-size: 16px;
+  line-height: 18px;
   color: var(--color-search-tags, #808080);
   list-style: none;
   text-align: left;
