@@ -6,8 +6,23 @@
     <title>Recipes — рецепты для домашней кухни</title>
     <link rel="stylesheet" href="css/style.css">
     <script src="scripts/script.js" defer></script>
+    <noscript>
+      <style>
+        .preloader {
+          display: none;
+        }
+
+        .site-header {
+          animation: none;
+        }
+      </style>
+    </noscript>
   </head>
   <body class="page">
+    <div class="preloader" aria-hidden="true" data-preloader>
+      <span class="preloader__spinner"></span>
+    </div>
+
     <header class="site-header">
       <div class="container site-header__inner">
         <a class="site-header__logo" href="index.html">Recipes</a>

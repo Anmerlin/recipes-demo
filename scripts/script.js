@@ -116,3 +116,23 @@ if (scrollUpButton) {
     }
   });
 }
+
+/* 5. Прелоадер: скрывается, когда страница полностью загружена */
+
+const preloader = document.querySelector('[data-preloader]');
+
+if (preloader) {
+  const hidePreloader = () => {
+    preloader.classList.add('preloader--hidden');
+    // После завершения fade-out элемент больше не нужен в DOM.
+    preloader.addEventListener('transitionend', () => preloader.remove(), { once: true });
+  };
+
+  // load наступает после загрузки изображений, шрифтов и стилей,
+  // поэтому прелоадер держится ровно столько, сколько грузится страница, без искусственной задержки.
+  if (document.readyState === 'complete') {
+    hidePreloader();
+  } else {
+    window.addEventListener('load', hidePreloader, { once: true });
+  }
+}

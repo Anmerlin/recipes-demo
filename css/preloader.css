@@ -1,0 +1,51 @@
+/*
+  Прелоадер из исходного проекта.
+  Контент страницы не скрывается: прелоадер лежит поверх него
+  и исчезает, когда JavaScript получает событие load.
+  Без JavaScript прелоадер отключает <noscript> в <head>.
+*/
+.preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-page, #fefefb);
+  transition:
+    opacity 0.5s ease,
+    visibility 0.5s ease;
+}
+
+.preloader--hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.preloader__spinner {
+  width: 60px;
+  height: 60px;
+  border: 8px solid var(--color-footer, #fbf9f4);
+  border-top-color: var(--color-accent, #fdb100);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+/* Header выезжает после того, как прелоадер начал исчезать, а не под ним. */
+.page:has(> .preloader:not(.preloader--hidden)) .site-header {
+  animation-play-state: paused;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .preloader,
+  .preloader__spinner {
+    transition: none;
+    animation: none;
+  }
+}
