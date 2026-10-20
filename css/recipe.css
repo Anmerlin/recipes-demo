@@ -1,19 +1,16 @@
 .featured-recipe {
-  padding-block: 72px 104px;
-}
-
-.featured-recipe > .container > .section-title {
-  margin-bottom: var(--space-4, 32px);
+  padding-block: clamp(72px, 10.9vw, 157px) 0;
 }
 
 .recipe-meta {
   display: flex;
   flex-wrap: wrap;
-  gap: 16px 35px;
+  gap: 16px 32px;
   margin: 0 0 var(--space-3, 24px);
   justify-content: flex-end;
   font-size: 16px;
-  line-height: 1.75;
+  line-height: 28px;
+  color: var(--color-text, #25292d);
 }
 
 .recipe-meta__item {
@@ -46,7 +43,7 @@
 
 .recipe-card__author {
   position: absolute;
-  bottom: 37px;
+  bottom: 38px;
   left: 0;
   margin: 0;
 }
@@ -57,7 +54,7 @@
   border-radius: 0 5px 5px 0;
   font-size: 16px;
   font-weight: 600;
-  line-height: 1.75;
+  line-height: 28px;
   color: var(--color-accent, #fdb100);
   text-decoration: none;
   background-color: var(--color-surface, #ffffff);
@@ -79,21 +76,34 @@
 .recipe-card__content {
   flex: 1 1 420px;
   min-width: 0;
-  max-width: 522px;
+  max-width: 513px;
 }
 
+/* Бейдж собран из двух слоёв: текст по дуге (SVG textPath) и круг со смайлом. */
 .recipe-day {
-  display: inline-flex;
-  gap: 12px;
-  margin-bottom: 27px;
-  align-items: center;
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--color-accent, #fdb100);
+  position: relative;
+  width: 101px;
+  height: 95px;
+  margin-bottom: 32px;
+}
+
+.recipe-day__arc {
+  position: absolute;
+  inset: 0;
+  overflow: visible;
+}
+
+.recipe-day__label {
+  font-size: 17px;
+  letter-spacing: 0.5px;
+  fill: var(--color-accent, #fdb100);
 }
 
 .recipe-day__icon {
-  display: inline-flex;
+  position: absolute;
+  top: 14.5px;
+  left: 10px;
+  display: flex;
   width: 80px;
   height: 80px;
   border-radius: 50%;
@@ -118,8 +128,8 @@
 }
 
 .recipe-card__text {
-  margin: var(--space-3, 24px) 0 0;
-  line-height: 1.75;
+  margin: var(--space-2, 16px) 0 0;
+  line-height: 32px;
   color: var(--color-muted, #4a525a);
   overflow-wrap: anywhere;
 }

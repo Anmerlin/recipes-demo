@@ -99,9 +99,9 @@
 
       <section class="featured-recipe" id="recipes" aria-labelledby="featured-title">
         <div class="container">
-          <h2 class="section-title" id="featured-title">Рецепт дня</h2>
+          <h2 class="visually-hidden" id="featured-title">Рецепт дня</h2>
 
-          <div class="recipe-meta" aria-label="Информация о рецепте">
+          <div class="recipe-meta">
             <span class="recipe-meta__item">
               <img class="recipe-meta__icon" src="assets/images/icon/heart.svg" alt="" width="20" height="19">
               <span class="visually-hidden">Добавили в избранное:</span>
@@ -129,11 +129,16 @@
             </div>
 
             <div class="recipe-card__content">
-              <div class="recipe-day" aria-label="Рецепт дня">
-                <span class="recipe-day__icon" aria-hidden="true">
+              <div class="recipe-day" aria-hidden="true">
+                <svg class="recipe-day__arc" width="101" height="95" viewBox="0 0 101 95" focusable="false">
+                  <path id="recipe-day-arc" d="M 3.8 54.5 A 46 46 0 0 1 95.8 54.5" fill="none" />
+                  <text class="recipe-day__label">
+                    <textPath href="#recipe-day-arc" startOffset="50%" text-anchor="middle">рецепт дня</textPath>
+                  </text>
+                </svg>
+                <span class="recipe-day__icon">
                   <img src="assets/images/icon/smile.svg" alt="" width="50" height="51">
                 </span>
-                <span class="recipe-day__text">Рецепт дня</span>
               </div>
 
               <h3 class="recipe-card__title">Тыквенный супчик на кокосовом молоке</h3>
