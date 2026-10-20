@@ -1,5 +1,43 @@
+/*
+  Как в исходном проекте: header закреплён у верхнего края окна,
+  при загрузке выезжает сверху, после прокрутки на свою высоту
+  получает фон через модификатор --scroll (класс ставит JavaScript).
+*/
 .site-header {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 2;
   padding-block: 40px;
+  animation: show-header 0.8s ease-out both;
+  transition:
+    background-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.site-header--scroll {
+  background-color: var(--color-page, #fefefb);
+  box-shadow: var(--shadow-control, 0 8px 42px rgba(34, 39, 47, 0.04));
+}
+
+/*
+  Ниже 56rem header в макете стоит над контентом, а не поверх hero,
+  поэтому контент сдвигается на фактическую высоту header.
+  --header-height измеряет JavaScript; fallback — высота на ширине 390px.
+*/
+.page {
+  padding-top: var(--header-height, 223px);
+}
+
+@keyframes show-header {
+  from {
+    transform: translateY(-100%);
+  }
+
+  to {
+    transform: translateY(0);
+  }
 }
 
 .site-header__inner {

@@ -32,6 +32,8 @@
 
 html {
   scroll-behavior: smooth;
+  /* Якорные переходы не уходят под fixed header. */
+  scroll-padding-top: var(--header-height, 120px);
 }
 
 body {
@@ -41,10 +43,6 @@ body {
   line-height: 1.55;
   color: var(--color-muted, #4a525a);
   background-color: var(--color-page, #fefefb);
-}
-
-section {
-  scroll-margin-block-start: 80px;
 }
 
 img {

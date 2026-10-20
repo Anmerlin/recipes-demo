@@ -7,6 +7,22 @@
   и только потом назначает обработчики.
 */
 
+/*
+  Общая функция для эффектов прокрутки: ставит класс элементу,
+  когда страница прокручена дальше порога, и снимает его обратно.
+  Порог передаётся функцией, чтобы при каждом событии брать актуальный размер
+  (высота header и окна меняется при resize).
+*/
+const toggleClassOnScroll = (element, className, getThreshold) => {
+  const update = () => {
+    element.classList.toggle(className, window.scrollY > getThreshold());
+  };
+
+  window.addEventListener('scroll', update, { passive: true });
+  // Синхронизируем состояние сразу: страница может открыться уже прокрученной.
+  update();
+};
+
 /* 1. Избранное: кнопка-переключатель и счётчик */
 
 const favoriteButton = document.querySelector('[data-favorite-toggle]');
@@ -60,4 +76,22 @@ if (searchInput && tags.length > 0 && tagsStatus) {
 
   searchInput.addEventListener('input', filterTags);
   filterTags();
+}
+
+/* 3. Header: фон после прокрутки на высоту header */
+
+const header = document.querySelector('.site-header');
+
+if (header) {
+  // Высота header нужна CSS для отступа контента на узких экранах (переменная --header-height).
+  const updateHeaderHeight = () => {
+    document.documentElement.style.setProperty('--header-height', `${header.offsetHeight}px`);
+  };
+
+  // ResizeObserver срабатывает при любом изменении размера header:
+  // смена ширины окна, перенос пунктов меню, догрузка web-шрифтов.
+  // Первый вызов происходит сразу после начала наблюдения.
+  new ResizeObserver(updateHeaderHeight).observe(header);
+
+  toggleClassOnScroll(header, 'site-header--scroll', () => header.offsetHeight);
 }
