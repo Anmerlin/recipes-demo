@@ -248,3 +248,295 @@ if (categoriesList && categoriesStatus && categoriesRetry && categoryTemplate) {
 
   loadCategories();
 }
+
+/* 7. Проверка форм: общие функции для всех форм страницы */
+
+/*
+  Браузер уже знает правила полей из HTML-атрибутов (required, type="email", minlength, pattern, min/max)
+  и записывает результат проверки в field.validity. Формы помечены novalidate:
+  стандартные всплывающие подсказки отключены, а текст ошибки мы показываем сами — рядом с полем.
+  Клиентская проверка помогает пользователю, но не защищает данные: сервер обязан проверить всё заново.
+*/
+// Склонение слова после числа: 1 символ, 3 символа, 8 символов.
+const pluralize = (count, [one, few, many]) => {
+  const lastTwo = count % 100;
+  const last = count % 10;
+
+  if (lastTwo >= 11 && lastTwo <= 14) {
+    return many;
+  }
+
+  if (last === 1) {
+    return one;
+  }
+
+  return last >= 2 && last <= 4 ? few : many;
+};
+
+const SYMBOL_FORMS = ['символ', 'символа', 'символов'];
+
+const getErrorMessage = (field) => {
+  const { validity } = field;
+
+  if (validity.valid) {
+    return '';
+  }
+
+  if (validity.valueMissing) {
+    return field.type === 'radio' ? 'Выберите один из вариантов' : 'Заполните это поле';
+  }
+
+  if (validity.typeMismatch && field.type === 'email') {
+    return 'Введите email в формате name@example.com';
+  }
+
+  if (validity.tooShort) {
+    return `Минимум ${field.minLength} ${pluralize(field.minLength, SYMBOL_FORMS)}, сейчас ${field.value.length}`;
+  }
+
+  if (validity.tooLong) {
+    return `Максимум ${field.maxLength} ${pluralize(field.maxLength, SYMBOL_FORMS)}`;
+  }
+
+  if (validity.patternMismatch) {
+    return field.dataset.patternMessage || 'Значение не подходит по формату';
+  }
+
+  if (validity.badInput) {
+    return 'Введите число';
+  }
+
+  if (validity.rangeUnderflow) {
+    return `Не меньше ${field.min}`;
+  }
+
+  if (validity.rangeOverflow) {
+    return `Не больше ${field.max}`;
+  }
+
+  if (validity.stepMismatch) {
+    return `Значение должно быть кратно ${field.step}`;
+  }
+
+  // customError: сообщение задано через setCustomValidity() для правил, которых нет в HTML.
+  return field.validationMessage;
+};
+
+// Показывает или убирает ошибку одного поля: текст под полем и aria-invalid для скринридера.
+const validateField = (field) => {
+  const message = getErrorMessage(field);
+  const error = field.closest('[data-field]')?.querySelector('[data-error]');
+
+  if (error) {
+    error.textContent = message;
+  }
+
+  // У группы радиокнопок состояние ставим на все кнопки группы.
+  const targets = field.type === 'radio' ? field.form.elements[field.name] : [field];
+
+  targets.forEach((target) => {
+    if (message) {
+      target.setAttribute('aria-invalid', 'true');
+    } else {
+      target.removeAttribute('aria-invalid');
+    }
+  });
+
+  return message === '';
+};
+
+// Проверяет все поля формы и возвращает первое поле с ошибкой (или null).
+const validateForm = (form) => {
+  let firstInvalid = null;
+  const checkedGroups = new Set();
+
+  Array.from(form.elements).forEach((field) => {
+    // willValidate = false у кнопок, fieldset и отключённых полей.
+    if (!field.willValidate) {
+      return;
+    }
+
+    // Группу радиокнопок проверяем один раз.
+    if (field.type === 'radio') {
+      if (checkedGroups.has(field.name)) {
+        return;
+      }
+
+      checkedGroups.add(field.name);
+    }
+
+    if (!validateField(field) && !firstInvalid) {
+      firstInvalid = field;
+    }
+  });
+
+  return firstInvalid;
+};
+
+// Убирает все сообщения формы: ошибки полей, aria-invalid и статус.
+const clearFormMessages = (form) => {
+  form.querySelectorAll('[data-error]').forEach((error) => {
+    error.textContent = '';
+  });
+
+  form.querySelectorAll('[aria-invalid]').forEach((field) => {
+    field.removeAttribute('aria-invalid');
+  });
+
+  const status = form.querySelector('[data-form-status]');
+
+  if (status) {
+    status.textContent = '';
+  }
+};
+
+/*
+  Пока пользователь впервые заполняет поле, ошибки не показываем.
+  Если ошибка уже показана, проверяем поле заново при каждом изменении — сообщение исчезнет, как только значение станет верным.
+*/
+const enableLiveValidation = (form) => {
+  const revalidate = (event) => {
+    const field = event.target;
+
+    if (field.willValidate && field.getAttribute('aria-invalid') === 'true') {
+      validateField(field);
+    }
+  };
+
+  form.addEventListener('input', revalidate);
+  form.addEventListener('change', revalidate);
+};
+
+/* 8. Окно входа и регистрации */
+
+const authDialog = document.querySelector('[data-auth-dialog]');
+const authOpenButtons = document.querySelectorAll('[data-auth-open]');
+
+if (authDialog && authOpenButtons.length > 0) {
+  const panels = authDialog.querySelectorAll('[data-auth-panel]');
+  const loginForm = authDialog.querySelector('[data-login-form]');
+  const registerForm = authDialog.querySelector('[data-register-form]');
+  const closeButton = authDialog.querySelector('[data-auth-close]');
+
+  // Показывает одну панель (вход или регистрация) и связывает заголовок окна с её заголовком.
+  const showAuthPanel = (name) => {
+    panels.forEach((panel) => {
+      panel.hidden = panel.dataset.authPanel !== name;
+
+      if (!panel.hidden) {
+        authDialog.setAttribute('aria-labelledby', panel.getAttribute('aria-labelledby'));
+        // Фокус — на первое поле видимой формы.
+        panel.querySelector('input')?.focus();
+      }
+    });
+  };
+
+  authOpenButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+      authDialog.showModal();
+      showAuthPanel(button.dataset.authOpen);
+    });
+  });
+
+  authDialog.querySelectorAll('[data-auth-switch]').forEach((button) => {
+    button.addEventListener('click', () => showAuthPanel(button.dataset.authSwitch));
+  });
+
+  if (closeButton) {
+    closeButton.addEventListener('click', () => authDialog.close());
+  }
+
+  // Клик по затемнённой подложке: target — сам <dialog>, а не его содержимое.
+  authDialog.addEventListener('click', (event) => {
+    if (event.target === authDialog) {
+      authDialog.close();
+    }
+  });
+
+  // При закрытии (кнопка, подложка, Esc) формы возвращаются в исходное состояние.
+  authDialog.addEventListener('close', () => {
+    [loginForm, registerForm].forEach((form) => {
+      if (form) {
+        form.reset();
+        clearFormMessages(form);
+      }
+    });
+  });
+
+  if (loginForm) {
+    enableLiveValidation(loginForm);
+
+    loginForm.addEventListener('submit', (event) => {
+      // Без сервера отправка перезагрузила бы страницу, поэтому отменяем её.
+      event.preventDefault();
+
+      const status = loginForm.querySelector('[data-form-status]');
+      const firstInvalid = validateForm(loginForm);
+
+      if (firstInvalid) {
+        status.textContent = '';
+        firstInvalid.focus();
+        return;
+      }
+
+      // Пароль не храним и не показываем: после проверки формы поле очищается.
+      loginForm.elements.password.value = '';
+      status.textContent = 'Форма заполнена верно. Логин и пароль проверит сервер — его подключим на следующем занятии.';
+    });
+  }
+
+  if (registerForm) {
+    const password = registerForm.elements.password;
+    const passwordRepeat = registerForm.elements.passwordRepeat;
+
+    // Совпадение паролей нельзя описать атрибутом, поэтому задаём ошибку через setCustomValidity().
+    const checkPasswordsMatch = () => {
+      const isMismatch = passwordRepeat.value !== '' && passwordRepeat.value !== password.value;
+      passwordRepeat.setCustomValidity(isMismatch ? 'Пароли не совпадают' : '');
+    };
+
+    // Имя из одних пробелов required не ловит: пробел — тоже символ.
+    const checkNameNotBlank = () => {
+      const name = registerForm.elements.name;
+      const isBlank = name.value !== '' && name.value.trim() === '';
+      name.setCustomValidity(isBlank ? 'Имя не может состоять из пробелов' : '');
+    };
+
+    registerForm.addEventListener('input', (event) => {
+      if (event.target === password || event.target === passwordRepeat) {
+        checkPasswordsMatch();
+
+        // Пароль изменили после ошибки «не совпадают» — пересчитываем сообщение у повтора.
+        if (passwordRepeat.getAttribute('aria-invalid') === 'true') {
+          validateField(passwordRepeat);
+        }
+      }
+
+      if (event.target === registerForm.elements.name) {
+        checkNameNotBlank();
+      }
+    });
+
+    enableLiveValidation(registerForm);
+
+    registerForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+
+      checkPasswordsMatch();
+      checkNameNotBlank();
+
+      const status = registerForm.querySelector('[data-form-status]');
+      const firstInvalid = validateForm(registerForm);
+
+      if (firstInvalid) {
+        status.textContent = '';
+        firstInvalid.focus();
+        return;
+      }
+
+      password.value = '';
+      passwordRepeat.value = '';
+      status.textContent = 'Форма заполнена верно. Создавать аккаунт будет сервер — его подключим на следующем занятии.';
+    });
+  }
+}
