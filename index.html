@@ -244,6 +244,12 @@
               <p class="form__error" id="login-password-error" data-error></p>
             </div>
 
+            <!-- Сохраняется только логин и только в этом браузере (localStorage). Пароль не сохраняется. -->
+            <label class="form__check">
+              <input class="form__checkbox" type="checkbox" name="remember" data-remember-login>
+              Запомнить логин на этом устройстве
+            </label>
+
             <p class="form__status" role="status" data-form-status></p>
 
             <div class="form__actions">

@@ -166,3 +166,27 @@
   outline: 3px solid var(--color-focus, #6b8afd);
   outline-offset: 4px;
 }
+
+.form__check {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  font-size: 16px;
+  line-height: 1.4;
+  color: var(--color-text, #25292d);
+  cursor: pointer;
+}
+
+.form__checkbox {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  accent-color: var(--color-accent-hover, #e39f00);
+  cursor: pointer;
+}
+
+.form__checkbox:focus-visible {
+  outline: 3px solid var(--color-focus, #6b8afd);
+  outline-offset: 2px;
+}

@@ -409,6 +409,38 @@ const enableLiveValidation = (form) => {
 
 /* 8. Окно входа и регистрации */
 
+/*
+  Запомненный логин хранится в localStorage: строка по ключу, только в этом браузере,
+  видна в DevTools → Application → Local Storage. Это удобство, а не вход в аккаунт:
+  пароли, токены и другие секреты в localStorage не кладём.
+  Доступ к хранилищу может быть запрещён настройками браузера, поэтому обращения обёрнуты в try/catch.
+*/
+const SAVED_LOGIN_KEY = 'recipes:login';
+
+const readSavedLogin = () => {
+  try {
+    return localStorage.getItem(SAVED_LOGIN_KEY);
+  } catch {
+    return null;
+  }
+};
+
+// Возвращает true, если запись в хранилище удалась.
+const saveLogin = (login) => {
+  try {
+    if (login) {
+      localStorage.setItem(SAVED_LOGIN_KEY, login);
+    } else {
+      localStorage.removeItem(SAVED_LOGIN_KEY);
+    }
+
+    return true;
+  } catch {
+    // Хранилище недоступно: форма работает и без запоминания.
+    return false;
+  }
+};
+
 const authDialog = document.querySelector('[data-auth-dialog]');
 const authOpenButtons = document.querySelectorAll('[data-auth-open]');
 
@@ -425,14 +457,28 @@ if (authDialog && authOpenButtons.length > 0) {
 
       if (!panel.hidden) {
         authDialog.setAttribute('aria-labelledby', panel.getAttribute('aria-labelledby'));
-        // Фокус — на первое поле видимой формы.
-        panel.querySelector('input')?.focus();
+
+        // Фокус — на первое незаполненное поле видимой формы (логин может быть подставлен из хранилища).
+        const inputs = Array.from(panel.querySelectorAll('input:not([type="checkbox"])'));
+        const firstEmpty = inputs.find((input) => input.value === '') || inputs[0];
+        firstEmpty?.focus();
       }
     });
   };
 
+  // Если логин сохранён, подставляем его и оставляем отмеченным флажок «Запомнить».
+  const fillSavedLogin = () => {
+    const savedLogin = readSavedLogin();
+
+    if (loginForm && savedLogin) {
+      loginForm.elements.login.value = savedLogin;
+      loginForm.elements.remember.checked = true;
+    }
+  };
+
   authOpenButtons.forEach((button) => {
     button.addEventListener('click', () => {
+      fillSavedLogin();
       authDialog.showModal();
       showAuthPanel(button.dataset.authOpen);
     });
@@ -479,9 +525,14 @@ if (authDialog && authOpenButtons.length > 0) {
         return;
       }
 
+      // Флажок отмечен — запоминаем логин, снят — удаляем ранее сохранённый.
+      const { login, remember, password } = loginForm.elements;
+      const isSaved = saveLogin(remember.checked ? login.value.trim() : null);
+      const loginNote = remember.checked && isSaved ? ' Логин запомнен в этом браузере.' : '';
+
       // Пароль не храним и не показываем: после проверки формы поле очищается.
-      loginForm.elements.password.value = '';
-      status.textContent = 'Форма заполнена верно. Логин и пароль проверит сервер — его подключим на следующем занятии.';
+      password.value = '';
+      status.textContent = `Форма заполнена верно.${loginNote} Логин и пароль проверит сервер — его подключим на следующем занятии.`;
     });
   }
 
