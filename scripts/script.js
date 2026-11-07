@@ -168,3 +168,83 @@ if (preloader) {
     window.addEventListener('load', hidePreloader, { once: true });
   }
 }
+
+/* 6. Категории: данные из JSON-файла через fetch */
+
+// Адрес данных. На занятии по backend здесь будет адрес серверного API,
+// а код загрузки и отрисовки останется прежним.
+const CATEGORIES_URL = 'data/categories.json';
+
+/*
+  Загрузка категорий. Функция асинхронная: await ждёт ответ сервера,
+  не блокируя страницу. Результат — массив объектов категорий.
+*/
+const fetchCategories = async () => {
+  const response = await fetch(CATEGORIES_URL);
+
+  // fetch отклоняет промис только при сетевой ошибке.
+  // Ответы 404 или 500 приходят как обычный response, поэтому статус проверяем сами.
+  if (!response.ok) {
+    throw new Error(`Сервер ответил ${response.status} ${response.statusText}`);
+  }
+
+  return response.json();
+};
+
+const categoriesList = document.querySelector('[data-categories-list]');
+const categoriesStatus = document.querySelector('[data-categories-status]');
+const categoriesRetry = document.querySelector('[data-categories-retry]');
+const categoryTemplate = document.querySelector('#category-card-template');
+
+if (categoriesList && categoriesStatus && categoriesRetry && categoryTemplate) {
+  // Одна карточка: копия шаблона, данные вставляются как текст, а не как HTML.
+  const createCategoryCard = (category) => {
+    const card = categoryTemplate.content.firstElementChild.cloneNode(true);
+
+    card.querySelector('.category-card__icon').src = category.icon;
+    card.querySelector('.category-card__title').textContent = category.title;
+    card.querySelector('.category-card__text').textContent = category.text;
+
+    return card;
+  };
+
+  const loadCategories = async () => {
+    // Состояние «загрузка»: сообщение видно, кнопка повтора скрыта.
+    categoriesList.setAttribute('aria-busy', 'true');
+    categoriesStatus.textContent = 'Загружаем категории…';
+    categoriesRetry.hidden = true;
+
+    try {
+      const categories = await fetchCategories();
+
+      // replaceChildren() заменяет содержимое списка целиком: повторная загрузка не дублирует карточки.
+      categoriesList.replaceChildren(...categories.map(createCategoryCard));
+      categoriesStatus.textContent = categories.length === 0 ? 'Категорий пока нет' : '';
+    } catch (error) {
+      // Пользователь видит понятное сообщение и может повторить запрос, подробности — в Console.
+      console.error('Не удалось загрузить категории:', error);
+      categoriesStatus.textContent = 'Не удалось загрузить категории. Проверьте соединение и попробуйте еще раз.';
+      categoriesRetry.hidden = false;
+    } finally {
+      // finally выполняется и после успеха, и после ошибки.
+      categoriesList.removeAttribute('aria-busy');
+    }
+  };
+
+  categoriesRetry.addEventListener('click', async () => {
+    await loadCategories();
+
+    // После успешного повтора кнопка скрывается вместе с фокусом.
+    // Переносим фокус на заголовок раздела, чтобы пользователь клавиатуры не потерял позицию.
+    if (categoriesRetry.hidden) {
+      const categoriesTitle = document.querySelector('#categories-title');
+
+      if (categoriesTitle) {
+        categoriesTitle.setAttribute('tabindex', '-1');
+        categoriesTitle.focus();
+      }
+    }
+  });
+
+  loadCategories();
+}

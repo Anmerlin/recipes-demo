@@ -73,39 +73,29 @@
             <p class="section-lead">Добавляй рецепты и указывай наиболее популярные теги. Это позволит быстро находить любые категории.</p>
           </div>
 
-          <ul class="categories__list">
+          <!--
+            Карточки категорий приходят из data/categories.json (fetch в scripts/script.js).
+            Пока данные загружаются или если запрос не удался, вместо списка видно сообщение.
+          -->
+          <ul class="categories__list" data-categories-list></ul>
+          <div class="categories__state">
+            <p class="categories__status" role="status" data-categories-status></p>
+            <button class="button button--outline" type="button" data-categories-retry hidden>Повторить</button>
+          </div>
+          <noscript>
+            <p class="categories__status">Категории загружаются с помощью JavaScript. Включите его в браузере.</p>
+          </noscript>
+
+          <!-- Шаблон одной карточки: JS клонирует его и подставляет данные через textContent. -->
+          <template id="category-card-template">
             <li class="category-card">
               <span class="category-card__icon-wrap" aria-hidden="true">
                 <img class="category-card__icon" src="assets/images/icon/menu.svg" alt="" width="24" height="24">
               </span>
-              <h3 class="category-card__title">Простые блюда</h3>
-              <p class="category-card__text">Время приготовления таких блюд не более 1 часа</p>
+              <h3 class="category-card__title"></h3>
+              <p class="category-card__text"></p>
             </li>
-
-            <li class="category-card">
-              <span class="category-card__icon-wrap" aria-hidden="true">
-                <img class="category-card__icon" src="assets/images/icon/cook.svg" alt="" width="24" height="24">
-              </span>
-              <h3 class="category-card__title">Детское</h3>
-              <p class="category-card__text">Самые полезные блюда, которые можно детям любого возраста</p>
-            </li>
-
-            <li class="category-card">
-              <span class="category-card__icon-wrap" aria-hidden="true">
-                <img class="category-card__icon" src="assets/images/icon/chef.svg" alt="" width="24" height="24">
-              </span>
-              <h3 class="category-card__title">От шеф-поваров</h3>
-              <p class="category-card__text">Требуют умения, времени и терпения, зато как в ресторане</p>
-            </li>
-
-            <li class="category-card">
-              <span class="category-card__icon-wrap" aria-hidden="true">
-                <img class="category-card__icon" src="assets/images/icon/fire.svg" alt="" width="24" height="24">
-              </span>
-              <h3 class="category-card__title">На Праздник</h3>
-              <p class="category-card__text">Чем удивить гостей, чтобы все были сыты за праздничным столом</p>
-            </li>
-          </ul>
+          </template>
         </div>
       </section>
 

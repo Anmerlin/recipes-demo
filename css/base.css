@@ -65,6 +65,14 @@ input {
   margin-inline: auto;
 }
 
+/*
+  Атрибут hidden должен скрывать элемент даже там, где компонент задаёт свой display
+  (например, .button с inline-flex). Это осознанное исключение из правила «без !important».
+*/
+[hidden] {
+  display: none !important;
+}
+
 .visually-hidden {
   position: absolute;
   width: 1px;

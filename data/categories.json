@@ -1,0 +1,26 @@
+[
+  {
+    "id": "simple",
+    "title": "Простые блюда",
+    "text": "Время приготовления таких блюд не более 1 часа",
+    "icon": "assets/images/icon/menu.svg"
+  },
+  {
+    "id": "kids",
+    "title": "Детское",
+    "text": "Самые полезные блюда, которые можно детям любого возраста",
+    "icon": "assets/images/icon/cook.svg"
+  },
+  {
+    "id": "chef",
+    "title": "От шеф-поваров",
+    "text": "Требуют умения, времени и терпения, зато как в ресторане",
+    "icon": "assets/images/icon/chef.svg"
+  },
+  {
+    "id": "holiday",
+    "title": "На Праздник",
+    "text": "Чем удивить гостей, чтобы все были сыты за праздничным столом",
+    "icon": "assets/images/icon/fire.svg"
+  }
+]
