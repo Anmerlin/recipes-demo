@@ -283,7 +283,11 @@ const getErrorMessage = (field) => {
   }
 
   if (validity.valueMissing) {
-    return field.type === 'radio' ? 'Выберите один из вариантов' : 'Заполните это поле';
+    if (field.type === 'radio' || field.tagName === 'SELECT') {
+      return 'Выберите один из вариантов';
+    }
+
+    return 'Заполните это поле';
   }
 
   if (validity.typeMismatch && field.type === 'email') {
@@ -590,4 +594,105 @@ if (authDialog && authOpenButtons.length > 0) {
       status.textContent = 'Форма заполнена верно. Создавать аккаунт будет сервер — его подключим на следующем занятии.';
     });
   }
+}
+
+/* 9. Форма «Добавить рецепт»: проверка, сбор данных и предпросмотр JSON */
+
+const recipeForm = document.querySelector('[data-recipe-form]');
+const recipePreview = document.querySelector('[data-recipe-preview]');
+const recipeJson = document.querySelector('[data-recipe-json]');
+
+if (recipeForm && recipePreview && recipeJson) {
+  const { title, ingredients, photo } = recipeForm.elements;
+  const categorySelect = recipeForm.querySelector('[data-category-select]');
+  const categoryHint = recipeForm.querySelector('[data-category-hint]');
+  const status = recipeForm.querySelector('[data-form-status]');
+  const MAX_PHOTO_SIZE = 2 * 1024 * 1024; // 2 МБ в байтах
+
+  // Список категорий — те же данные, что и у карточек: одна точка правды для всей страницы.
+  const loadCategoryOptions = async () => {
+    categorySelect.disabled = true;
+    categoryHint.textContent = 'Загружаем список категорий…';
+
+    try {
+      const categories = await fetchCategories();
+      const options = categories.map((category) => new Option(category.title, category.id));
+
+      categorySelect.append(...options);
+      categoryHint.textContent = '';
+    } catch (error) {
+      console.error('Не удалось загрузить категории для формы:', error);
+      categoryHint.textContent = 'Список категорий не загрузился. Обновите страницу, чтобы попробовать еще раз.';
+    } finally {
+      categorySelect.disabled = false;
+    }
+  };
+
+  // Ингредиенты: строки без пустых и без лишних пробелов по краям.
+  const parseIngredients = (text) => text
+    .split('\n')
+    .map((line) => line.trim())
+    .filter((line) => line !== '');
+
+  // Правила, которых нет в HTML-атрибутах, задаём через setCustomValidity().
+  const checkCustomRules = () => {
+    const isBlankTitle = title.value !== '' && title.value.trim() === '';
+    title.setCustomValidity(isBlankTitle ? 'Название не может состоять из пробелов' : '');
+
+    const ingredientCount = parseIngredients(ingredients.value).length;
+    const isTooFewIngredients = ingredients.value !== '' && ingredientCount < 2;
+    ingredients.setCustomValidity(isTooFewIngredients ? `Нужно минимум два ингредиента, сейчас ${ingredientCount}` : '');
+
+    const file = photo.files[0];
+    const isTooLarge = file !== undefined && file.size > MAX_PHOTO_SIZE;
+    photo.setCustomValidity(isTooLarge ? 'Файл больше 2 МБ, выберите изображение поменьше' : '');
+  };
+
+  // Данные формы → объект для отправки. Числа приводим к числам, текст ингредиентов — к массиву.
+  // Сам файл в JSON не попадает: на сервер он уйдёт вместе с FormData, здесь показываем его описание.
+  const collectRecipe = () => {
+    const formData = new FormData(recipeForm);
+    const file = formData.get('photo');
+
+    return {
+      title: formData.get('title').trim(),
+      category: formData.get('category'),
+      time: Number(formData.get('time')),
+      difficulty: formData.get('difficulty'),
+      ingredients: parseIngredients(formData.get('ingredients')),
+      photo: file && file.size > 0 ? { name: file.name, type: file.type, size: file.size } : null,
+    };
+  };
+
+  recipeForm.addEventListener('input', checkCustomRules);
+  recipeForm.addEventListener('change', checkCustomRules);
+  enableLiveValidation(recipeForm);
+
+  recipeForm.addEventListener('submit', (event) => {
+    event.preventDefault();
+    checkCustomRules();
+
+    const firstInvalid = validateForm(recipeForm);
+
+    if (firstInvalid) {
+      status.textContent = '';
+      recipePreview.hidden = true;
+      firstInvalid.focus();
+      return;
+    }
+
+    // JSON.stringify с отступом 2 делает объект читаемым; textContent вставляет его как текст.
+    recipeJson.textContent = JSON.stringify(collectRecipe(), null, 2);
+    recipePreview.hidden = false;
+    status.textContent = 'Рецепт прошел проверку. Ниже — данные, которые форма отправит на сервер.';
+  });
+
+  // Кнопка «Очистить» (type="reset") очищает поля; сообщения и предпросмотр убираем сами.
+  recipeForm.addEventListener('reset', () => {
+    clearFormMessages(recipeForm);
+    recipePreview.hidden = true;
+    recipeJson.textContent = '';
+  });
+
+  loadCategoryOptions();
 }

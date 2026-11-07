@@ -123,6 +123,7 @@
   color: var(--color-error, #c62828);
 }
 
+.form__hint:empty,
 .form__error:empty,
 .form__status:empty {
   display: none;
@@ -177,7 +178,7 @@
   cursor: pointer;
 }
 
-.form__checkbox {
+.form__choice {
   flex-shrink: 0;
   width: 20px;
   height: 20px;
@@ -186,7 +187,32 @@
   cursor: pointer;
 }
 
-.form__checkbox:focus-visible {
+.form__choice:focus-visible {
   outline: 3px solid var(--color-focus, #6b8afd);
   outline-offset: 2px;
+}
+
+.form__options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 32px;
+}
+
+.form__textarea {
+  min-height: 140px;
+  resize: vertical;
+}
+
+.form__select {
+  cursor: pointer;
+}
+
+.form__file {
+  padding-block: 10px;
+  cursor: pointer;
+}
+
+/* Для группы радиокнопок рамки нет, поэтому ошибку показываем цветом подписи вариантов. */
+.form__field:has([aria-invalid="true"]) .form__options {
+  color: var(--color-error, #c62828);
 }

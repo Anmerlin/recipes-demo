@@ -185,6 +185,122 @@
           <p class="recipe-search__status" role="status" data-tags-status></p>
         </div>
       </section>
+      <section class="add-recipe" id="add-recipe" aria-labelledby="add-recipe-title">
+        <div class="container add-recipe__inner">
+          <h2 class="section-title" id="add-recipe-title">Добавить рецепт</h2>
+          <p class="section-lead add-recipe__lead">Заполните карточку рецепта. Пока сервер не подключен, под формой появятся данные, которые она отправит.</p>
+
+          <!--
+            action и method описывают будущую отправку на сервер.
+            Сейчас скрипт отменяет отправку, проверяет поля и показывает собранные данные в формате JSON.
+          -->
+          <form class="form add-recipe__form" action="/api/recipes" method="post" enctype="multipart/form-data" novalidate data-recipe-form>
+            <div class="form__field" data-field>
+              <label class="form__label" for="recipe-title">Название</label>
+              <input
+                class="form__input"
+                type="text"
+                id="recipe-title"
+                name="title"
+                required
+                minlength="3"
+                maxlength="80"
+                aria-describedby="recipe-title-error"
+              >
+              <p class="form__error" id="recipe-title-error" data-error></p>
+            </div>
+
+            <div class="form__row">
+              <div class="form__field" data-field>
+                <label class="form__label" for="recipe-category">Категория</label>
+                <!-- Варианты берутся из того же data/categories.json, что и карточки категорий. -->
+                <select class="form__input form__select" id="recipe-category" name="category" required aria-describedby="recipe-category-hint recipe-category-error" data-category-select>
+                  <option value="">Выберите категорию</option>
+                </select>
+                <p class="form__hint" id="recipe-category-hint" data-category-hint></p>
+                <p class="form__error" id="recipe-category-error" data-error></p>
+              </div>
+
+              <div class="form__field" data-field>
+                <label class="form__label" for="recipe-time">Время, минут</label>
+                <input
+                  class="form__input"
+                  type="number"
+                  id="recipe-time"
+                  name="time"
+                  required
+                  min="5"
+                  max="600"
+                  step="5"
+                  inputmode="numeric"
+                  aria-describedby="recipe-time-hint recipe-time-error"
+                >
+                <p class="form__hint" id="recipe-time-hint">От 5 до 600, шаг 5 минут</p>
+                <p class="form__error" id="recipe-time-error" data-error></p>
+              </div>
+            </div>
+
+            <fieldset class="form__field" aria-describedby="recipe-difficulty-error" data-field>
+              <legend class="form__label">Сложность</legend>
+              <div class="form__options">
+                <label class="form__check">
+                  <input class="form__choice" type="radio" name="difficulty" value="easy" required>
+                  Легко
+                </label>
+                <label class="form__check">
+                  <input class="form__choice" type="radio" name="difficulty" value="medium">
+                  Средне
+                </label>
+                <label class="form__check">
+                  <input class="form__choice" type="radio" name="difficulty" value="hard">
+                  Сложно
+                </label>
+              </div>
+              <p class="form__error" id="recipe-difficulty-error" data-error></p>
+            </fieldset>
+
+            <div class="form__field" data-field>
+              <label class="form__label" for="recipe-ingredients">Ингредиенты</label>
+              <textarea
+                class="form__input form__textarea"
+                id="recipe-ingredients"
+                name="ingredients"
+                rows="5"
+                required
+                aria-describedby="recipe-ingredients-hint recipe-ingredients-error"
+              ></textarea>
+              <p class="form__hint" id="recipe-ingredients-hint">Каждый ингредиент с новой строки, минимум два</p>
+              <p class="form__error" id="recipe-ingredients-error" data-error></p>
+            </div>
+
+            <div class="form__field" data-field>
+              <label class="form__label" for="recipe-photo">Фото блюда (необязательно)</label>
+              <input
+                class="form__input form__file"
+                type="file"
+                id="recipe-photo"
+                name="photo"
+                accept="image/png, image/jpeg, image/webp"
+                aria-describedby="recipe-photo-hint recipe-photo-error"
+              >
+              <p class="form__hint" id="recipe-photo-hint">PNG, JPEG или WebP, до 2 МБ</p>
+              <p class="form__error" id="recipe-photo-error" data-error></p>
+            </div>
+
+            <p class="form__status" role="status" data-form-status></p>
+
+            <div class="form__actions">
+              <button class="button" type="submit">Проверить и подготовить</button>
+              <button class="button button--outline" type="reset">Очистить</button>
+            </div>
+          </form>
+
+          <section class="add-recipe__preview" aria-labelledby="recipe-preview-title" data-recipe-preview hidden>
+            <h3 class="add-recipe__preview-title" id="recipe-preview-title">Данные для отправки на сервер</h3>
+            <pre class="add-recipe__json"><code data-recipe-json></code></pre>
+          </section>
+        </div>
+      </section>
     </main>
 
     <footer class="site-footer">
@@ -246,7 +362,7 @@
 
             <!-- Сохраняется только логин и только в этом браузере (localStorage). Пароль не сохраняется. -->
             <label class="form__check">
-              <input class="form__checkbox" type="checkbox" name="remember" data-remember-login>
+              <input class="form__choice" type="checkbox" name="remember" data-remember-login>
               Запомнить логин на этом устройстве
             </label>
 
