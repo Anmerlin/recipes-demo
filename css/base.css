@@ -13,6 +13,7 @@
   --color-border: #d9d9d9;
   --color-focus: #6b8afd;
   --color-favorite: #e5383b;
+  --color-error: #c62828;
   --space-2: 16px;
   --space-3: 24px;
   --space-4: 32px;
@@ -56,13 +57,23 @@ a {
 }
 
 button,
-input {
+input,
+select,
+textarea {
   font: inherit;
 }
 
 .container {
   width: min(calc(100% - 32px), 1200px);
   margin-inline: auto;
+}
+
+/*
+  Атрибут hidden должен скрывать элемент даже там, где компонент задаёт свой display
+  (например, .button с inline-flex). Это осознанное исключение из правила «без !important».
+*/
+[hidden] {
+  display: none !important;
 }
 
 .visually-hidden {

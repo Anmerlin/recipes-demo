@@ -33,12 +33,12 @@
           </ul>
         </nav>
 
-        <a class="site-header__login" href="#login">
+        <button class="site-header__login" type="button" data-auth-open="login">
           <span class="site-header__login-icon" aria-hidden="true">
             <img src="assets/images/icon/login.svg" alt="" width="16" height="16">
           </span>
           Войти
-        </a>
+        </button>
       </div>
     </header>
 
@@ -50,7 +50,7 @@
             <p class="hero__lead">Никаких кулинарных книг и блокнотов! Храни все любимые рецепты в одном месте.</p>
             <div class="hero__actions">
               <a class="button button--add" href="#add-recipe">Добавить рецепт</a>
-              <a class="button button--outline" href="#login">Войти</a>
+              <button class="button button--outline" type="button" data-auth-open="login">Войти</button>
             </div>
           </div>
 
@@ -73,39 +73,29 @@
             <p class="section-lead">Добавляй рецепты и указывай наиболее популярные теги. Это позволит быстро находить любые категории.</p>
           </div>
 
-          <ul class="categories__list">
+          <!--
+            Карточки категорий приходят из data/categories.json (fetch в scripts/script.js).
+            Пока данные загружаются или если запрос не удался, вместо списка видно сообщение.
+          -->
+          <ul class="categories__list" data-categories-list></ul>
+          <div class="categories__state">
+            <p class="categories__status" role="status" data-categories-status></p>
+            <button class="button button--outline" type="button" data-categories-retry hidden>Повторить</button>
+          </div>
+          <noscript>
+            <p class="categories__status">Категории загружаются с помощью JavaScript. Включите его в браузере.</p>
+          </noscript>
+
+          <!-- Шаблон одной карточки: JS клонирует его и подставляет данные через textContent. -->
+          <template id="category-card-template">
             <li class="category-card">
               <span class="category-card__icon-wrap" aria-hidden="true">
                 <img class="category-card__icon" src="assets/images/icon/menu.svg" alt="" width="24" height="24">
               </span>
-              <h3 class="category-card__title">Простые блюда</h3>
-              <p class="category-card__text">Время приготовления таких блюд не более 1 часа</p>
+              <h3 class="category-card__title"></h3>
+              <p class="category-card__text"></p>
             </li>
-
-            <li class="category-card">
-              <span class="category-card__icon-wrap" aria-hidden="true">
-                <img class="category-card__icon" src="assets/images/icon/cook.svg" alt="" width="24" height="24">
-              </span>
-              <h3 class="category-card__title">Детское</h3>
-              <p class="category-card__text">Самые полезные блюда, которые можно детям любого возраста</p>
-            </li>
-
-            <li class="category-card">
-              <span class="category-card__icon-wrap" aria-hidden="true">
-                <img class="category-card__icon" src="assets/images/icon/chef.svg" alt="" width="24" height="24">
-              </span>
-              <h3 class="category-card__title">От шеф-поваров</h3>
-              <p class="category-card__text">Требуют умения, времени и терпения, зато как в ресторане</p>
-            </li>
-
-            <li class="category-card">
-              <span class="category-card__icon-wrap" aria-hidden="true">
-                <img class="category-card__icon" src="assets/images/icon/fire.svg" alt="" width="24" height="24">
-              </span>
-              <h3 class="category-card__title">На Праздник</h3>
-              <p class="category-card__text">Чем удивить гостей, чтобы все были сыты за праздничным столом</p>
-            </li>
-          </ul>
+          </template>
         </div>
       </section>
 
@@ -195,6 +185,122 @@
           <p class="recipe-search__status" role="status" data-tags-status></p>
         </div>
       </section>
+      <section class="add-recipe" id="add-recipe" aria-labelledby="add-recipe-title">
+        <div class="container add-recipe__inner">
+          <h2 class="section-title" id="add-recipe-title">Добавить рецепт</h2>
+          <p class="section-lead add-recipe__lead">Заполните карточку рецепта. Пока сервер не подключен, под формой появятся данные, которые она отправит.</p>
+
+          <!--
+            action и method описывают будущую отправку на сервер.
+            Сейчас скрипт отменяет отправку, проверяет поля и показывает собранные данные в формате JSON.
+          -->
+          <form class="form add-recipe__form" action="/api/recipes" method="post" enctype="multipart/form-data" novalidate data-recipe-form>
+            <div class="form__field" data-field>
+              <label class="form__label" for="recipe-title">Название</label>
+              <input
+                class="form__input"
+                type="text"
+                id="recipe-title"
+                name="title"
+                required
+                minlength="3"
+                maxlength="80"
+                aria-describedby="recipe-title-error"
+              >
+              <p class="form__error" id="recipe-title-error" data-error></p>
+            </div>
+
+            <div class="form__row">
+              <div class="form__field" data-field>
+                <label class="form__label" for="recipe-category">Категория</label>
+                <!-- Варианты берутся из того же data/categories.json, что и карточки категорий. -->
+                <select class="form__input form__select" id="recipe-category" name="category" required aria-describedby="recipe-category-hint recipe-category-error" data-category-select>
+                  <option value="">Выберите категорию</option>
+                </select>
+                <p class="form__hint" id="recipe-category-hint" data-category-hint></p>
+                <p class="form__error" id="recipe-category-error" data-error></p>
+              </div>
+
+              <div class="form__field" data-field>
+                <label class="form__label" for="recipe-time">Время, минут</label>
+                <input
+                  class="form__input"
+                  type="number"
+                  id="recipe-time"
+                  name="time"
+                  required
+                  min="5"
+                  max="600"
+                  step="5"
+                  inputmode="numeric"
+                  aria-describedby="recipe-time-hint recipe-time-error"
+                >
+                <p class="form__hint" id="recipe-time-hint">От 5 до 600, шаг 5 минут</p>
+                <p class="form__error" id="recipe-time-error" data-error></p>
+              </div>
+            </div>
+
+            <fieldset class="form__field" aria-describedby="recipe-difficulty-error" data-field>
+              <legend class="form__label">Сложность</legend>
+              <div class="form__options">
+                <label class="form__check">
+                  <input class="form__choice" type="radio" name="difficulty" value="easy" required>
+                  Легко
+                </label>
+                <label class="form__check">
+                  <input class="form__choice" type="radio" name="difficulty" value="medium">
+                  Средне
+                </label>
+                <label class="form__check">
+                  <input class="form__choice" type="radio" name="difficulty" value="hard">
+                  Сложно
+                </label>
+              </div>
+              <p class="form__error" id="recipe-difficulty-error" data-error></p>
+            </fieldset>
+
+            <div class="form__field" data-field>
+              <label class="form__label" for="recipe-ingredients">Ингредиенты</label>
+              <textarea
+                class="form__input form__textarea"
+                id="recipe-ingredients"
+                name="ingredients"
+                rows="5"
+                required
+                aria-describedby="recipe-ingredients-hint recipe-ingredients-error"
+              ></textarea>
+              <p class="form__hint" id="recipe-ingredients-hint">Каждый ингредиент с новой строки, минимум два</p>
+              <p class="form__error" id="recipe-ingredients-error" data-error></p>
+            </div>
+
+            <div class="form__field" data-field>
+              <label class="form__label" for="recipe-photo">Фото блюда (необязательно)</label>
+              <input
+                class="form__input form__file"
+                type="file"
+                id="recipe-photo"
+                name="photo"
+                accept="image/png, image/jpeg, image/webp"
+                aria-describedby="recipe-photo-hint recipe-photo-error"
+              >
+              <p class="form__hint" id="recipe-photo-hint">PNG, JPEG или WebP, до 2 МБ</p>
+              <p class="form__error" id="recipe-photo-error" data-error></p>
+            </div>
+
+            <p class="form__status" role="status" data-form-status></p>
+
+            <div class="form__actions">
+              <button class="button" type="submit">Проверить и подготовить</button>
+              <button class="button button--outline" type="reset">Очистить</button>
+            </div>
+          </form>
+
+          <section class="add-recipe__preview" aria-labelledby="recipe-preview-title" data-recipe-preview hidden>
+            <h3 class="add-recipe__preview-title" id="recipe-preview-title">Данные для отправки на сервер</h3>
+            <pre class="add-recipe__json"><code data-recipe-json></code></pre>
+          </section>
+        </div>
+      </section>
     </main>
 
     <footer class="site-footer">
@@ -203,6 +309,166 @@
         <p class="site-footer__copyright">© Recipes 2021</p>
       </div>
     </footer>
+
+    <!--
+      Окно входа и регистрации. <dialog> с showModal() сам удерживает фокус внутри,
+      закрывается по Esc и возвращает фокус на кнопку, которая его открыла.
+      Формы проверяются в браузере (novalidate отключает стандартные подсказки,
+      сообщения показывает scripts/script.js). Проверка логина и пароля — задача сервера.
+    -->
+    <dialog class="auth-dialog" aria-labelledby="login-title" data-auth-dialog>
+      <div class="auth-dialog__body">
+        <button class="auth-dialog__close" type="button" data-auth-close>
+          <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+          </svg>
+          <span class="visually-hidden">Закрыть</span>
+        </button>
+
+        <section class="auth-dialog__panel" aria-labelledby="login-title" data-auth-panel="login">
+          <h2 class="auth-dialog__title" id="login-title">Вход</h2>
+
+          <form class="form" action="/api/login" method="post" novalidate data-login-form>
+            <div class="form__field" data-field>
+              <label class="form__label" for="login-name">Логин</label>
+              <input
+                class="form__input"
+                type="text"
+                id="login-name"
+                name="login"
+                autocomplete="username"
+                required
+                minlength="3"
+                maxlength="32"
+                aria-describedby="login-name-error"
+              >
+              <p class="form__error" id="login-name-error" data-error></p>
+            </div>
+
+            <div class="form__field" data-field>
+              <label class="form__label" for="login-password">Пароль</label>
+              <input
+                class="form__input"
+                type="password"
+                id="login-password"
+                name="password"
+                autocomplete="current-password"
+                required
+                minlength="8"
+                aria-describedby="login-password-error"
+              >
+              <p class="form__error" id="login-password-error" data-error></p>
+            </div>
+
+            <!-- Сохраняется только логин и только в этом браузере (localStorage). Пароль не сохраняется. -->
+            <label class="form__check">
+              <input class="form__choice" type="checkbox" name="remember" data-remember-login>
+              Запомнить логин на этом устройстве
+            </label>
+
+            <p class="form__status" role="status" data-form-status></p>
+
+            <div class="form__actions">
+              <button class="button" type="submit">Войти</button>
+              <button class="form__link" type="button" data-auth-switch="register">У меня еще нет аккаунта</button>
+            </div>
+          </form>
+        </section>
+
+        <section class="auth-dialog__panel" aria-labelledby="register-title" data-auth-panel="register" hidden>
+          <h2 class="auth-dialog__title" id="register-title">Регистрация</h2>
+
+          <form class="form" action="/api/register" method="post" novalidate data-register-form>
+            <div class="form__field" data-field>
+              <label class="form__label" for="register-name">Имя</label>
+              <input
+                class="form__input"
+                type="text"
+                id="register-name"
+                name="name"
+                autocomplete="name"
+                required
+                maxlength="50"
+                aria-describedby="register-name-error"
+              >
+              <p class="form__error" id="register-name-error" data-error></p>
+            </div>
+
+            <div class="form__field" data-field>
+              <label class="form__label" for="register-login">Логин</label>
+              <input
+                class="form__input"
+                type="text"
+                id="register-login"
+                name="login"
+                autocomplete="username"
+                required
+                minlength="3"
+                maxlength="32"
+                pattern="[A-Za-z0-9_\-]+"
+                aria-describedby="register-login-hint register-login-error"
+                data-pattern-message="Только латинские буквы, цифры, дефис и подчеркивание"
+              >
+              <p class="form__hint" id="register-login-hint">От 3 до 32 символов: латинские буквы, цифры, «-» и «_»</p>
+              <p class="form__error" id="register-login-error" data-error></p>
+            </div>
+
+            <div class="form__field" data-field>
+              <label class="form__label" for="register-email">Email</label>
+              <input
+                class="form__input"
+                type="email"
+                id="register-email"
+                name="email"
+                autocomplete="email"
+                required
+                aria-describedby="register-email-error"
+              >
+              <p class="form__error" id="register-email-error" data-error></p>
+            </div>
+
+            <div class="form__row">
+              <div class="form__field" data-field>
+                <label class="form__label" for="register-password">Пароль</label>
+                <input
+                  class="form__input"
+                  type="password"
+                  id="register-password"
+                  name="password"
+                  autocomplete="new-password"
+                  required
+                  minlength="8"
+                  aria-describedby="register-password-hint register-password-error"
+                >
+                <p class="form__hint" id="register-password-hint">Минимум 8 символов</p>
+                <p class="form__error" id="register-password-error" data-error></p>
+              </div>
+
+              <div class="form__field" data-field>
+                <label class="form__label" for="register-password-repeat">Повторите пароль</label>
+                <input
+                  class="form__input"
+                  type="password"
+                  id="register-password-repeat"
+                  name="passwordRepeat"
+                  autocomplete="new-password"
+                  required
+                  aria-describedby="register-password-repeat-error"
+                >
+                <p class="form__error" id="register-password-repeat-error" data-error></p>
+              </div>
+            </div>
+
+            <p class="form__status" role="status" data-form-status></p>
+
+            <div class="form__actions">
+              <button class="button" type="submit">Зарегистрироваться</button>
+              <button class="form__link" type="button" data-auth-switch="login">У меня уже есть аккаунт</button>
+            </div>
+          </form>
+        </section>
+      </div>
+    </dialog>
 
     <button class="scroll-up" type="button" data-scroll-up>
       <svg width="35" height="35" viewBox="0 0 15 15" aria-hidden="true" focusable="false">

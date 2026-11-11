@@ -106,11 +106,16 @@
   display: inline-flex;
   gap: 14px;
   margin-left: auto;
+  /* Это <button>: сбрасываем стандартные рамку, фон и отступы кнопки. */
+  padding: 0;
+  border: 0;
   align-items: center;
   font-weight: 600;
   line-height: 1.2;
   color: var(--color-accent, #fdb100);
   text-decoration: none;
+  background: none;
+  cursor: pointer;
 }
 
 .site-header__login-icon {
