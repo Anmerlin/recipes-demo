@@ -169,11 +169,12 @@ if (preloader) {
   }
 }
 
-/* 6. Категории: данные из JSON-файла через fetch */
+/* 6. Категории: данные из базы через API */
 
-// Адрес данных. На занятии по backend здесь будет адрес серверного API,
-// а код загрузки и отрисовки останется прежним.
-const CATEGORIES_URL = 'data/categories.json';
+// Раньше здесь был адрес статического файла data/categories.json.
+// Теперь категории хранятся в MySQL, а PHP-скрипт отдает их в том же JSON-формате,
+// поэтому код загрузки и отрисовки ниже не изменился.
+const CATEGORIES_URL = 'api/categories.php';
 
 /*
   Загрузка категорий. Функция асинхронная: await ждёт ответ сервера,
@@ -395,6 +396,37 @@ const clearFormMessages = (form) => {
 };
 
 /*
+  Ошибки от сервера (ответ 422) показываем так же, как ошибки браузера: текст у поля и aria-invalid.
+  errors — объект «имя поля → сообщение» из ответа API. Возвращает первое поле с ошибкой в порядке формы.
+  Когда пользователь исправит поле, enableLiveValidation пересчитает его по правилам браузера.
+*/
+const showServerErrors = (form, errors) => {
+  let firstInvalid = null;
+
+  Array.from(form.elements).forEach((field) => {
+    const message = errors[field.name];
+
+    // У группы радиокнопок сообщение одно: после первой кнопки остальные уже помечены.
+    if (!message || field.getAttribute('aria-invalid') === 'true') {
+      return;
+    }
+
+    const error = field.closest('[data-field]')?.querySelector('[data-error]');
+
+    if (error) {
+      error.textContent = message;
+    }
+
+    const targets = field.type === 'radio' ? form.elements[field.name] : [field];
+
+    targets.forEach((target) => target.setAttribute('aria-invalid', 'true'));
+    firstInvalid = firstInvalid || field;
+  });
+
+  return firstInvalid;
+};
+
+/*
   Пока пользователь впервые заполняет поле, ошибки не показываем.
   Если ошибка уже показана, проверяем поле заново при каждом изменении — сообщение исчезнет, как только значение станет верным.
 */
@@ -596,7 +628,76 @@ if (authDialog && authOpenButtons.length > 0) {
   }
 }
 
-/* 9. Форма «Добавить рецепт»: проверка, сбор данных и предпросмотр JSON */
+/* 9. Новые рецепты: чтение из базы через API */
+
+const RECIPES_URL = 'api/recipes.php';
+
+// Сервер хранит код сложности (easy), а пользователю показываем подпись.
+const DIFFICULTY_LABELS = {
+  easy: 'Легко',
+  medium: 'Средне',
+  hard: 'Сложно',
+};
+
+const recipesList = document.querySelector('[data-recipes-list]');
+const recipesStatus = document.querySelector('[data-recipes-status]');
+const recipesRetry = document.querySelector('[data-recipes-retry]');
+const recipeItemTemplate = document.querySelector('#recipe-item-template');
+
+const createRecipeItem = (recipe) => {
+  const item = recipeItemTemplate.content.firstElementChild.cloneNode(true);
+  const ingredientsList = item.querySelector('.recipe-item__ingredients');
+
+  item.querySelector('.recipe-item__title').textContent = recipe.title;
+  item.querySelector('.recipe-item__meta').textContent = `${recipe.categoryTitle} · ${recipe.time} мин · ${DIFFICULTY_LABELS[recipe.difficulty]}`;
+
+  // Название и ингредиенты ввел пользователь — только textContent, никакого innerHTML.
+  ingredientsList.replaceChildren(...recipe.ingredients.map((ingredient) => {
+    const li = document.createElement('li');
+    li.textContent = ingredient;
+    return li;
+  }));
+
+  return item;
+};
+
+// Объявлена на верхнем уровне: форма «Добавить рецепт» вызывает ее после сохранения.
+const loadRecentRecipes = async () => {
+  if (!recipesList || !recipesStatus || !recipesRetry || !recipeItemTemplate) {
+    return;
+  }
+
+  recipesList.setAttribute('aria-busy', 'true');
+  recipesStatus.textContent = 'Загружаем рецепты…';
+  recipesRetry.hidden = true;
+
+  try {
+    const response = await fetch(RECIPES_URL);
+
+    if (!response.ok) {
+      throw new Error(`Сервер ответил ${response.status} ${response.statusText}`);
+    }
+
+    const recipes = await response.json();
+
+    recipesList.replaceChildren(...recipes.map(createRecipeItem));
+    recipesStatus.textContent = recipes.length === 0 ? 'Рецептов пока нет — добавьте первый' : '';
+  } catch (error) {
+    console.error('Не удалось загрузить рецепты:', error);
+    recipesStatus.textContent = 'Не удалось загрузить рецепты. Попробуйте еще раз.';
+    recipesRetry.hidden = false;
+  } finally {
+    recipesList.removeAttribute('aria-busy');
+  }
+};
+
+if (recipesRetry) {
+  recipesRetry.addEventListener('click', loadRecentRecipes);
+}
+
+loadRecentRecipes();
+
+/* 10. Форма «Добавить рецепт»: проверка в браузере, отправка на сервер и ответ API */
 
 const recipeForm = document.querySelector('[data-recipe-form]');
 const recipePreview = document.querySelector('[data-recipe-preview]');
@@ -607,6 +708,7 @@ if (recipeForm && recipePreview && recipeJson) {
   const categorySelect = recipeForm.querySelector('[data-category-select]');
   const categoryHint = recipeForm.querySelector('[data-category-hint]');
   const status = recipeForm.querySelector('[data-form-status]');
+  const submitButton = recipeForm.querySelector('[data-recipe-submit]');
   const MAX_PHOTO_SIZE = 2 * 1024 * 1024; // 2 МБ в байтах
 
   // Список категорий — те же данные, что и у карточек: одна точка правды для всей страницы.
@@ -649,10 +751,9 @@ if (recipeForm && recipePreview && recipeJson) {
   };
 
   // Данные формы → объект для отправки. Числа приводим к числам, текст ингредиентов — к массиву.
-  // Сам файл в JSON не попадает: на сервер он уйдёт вместе с FormData, здесь показываем его описание.
+  // Фото в объект не входит: загрузку файлов на сервер разберем отдельно.
   const collectRecipe = () => {
     const formData = new FormData(recipeForm);
-    const file = formData.get('photo');
 
     return {
       title: formData.get('title').trim(),
@@ -660,16 +761,41 @@ if (recipeForm && recipePreview && recipeJson) {
       time: Number(formData.get('time')),
       difficulty: formData.get('difficulty'),
       ingredients: parseIngredients(formData.get('ingredients')),
-      photo: file && file.size > 0 ? { name: file.name, type: file.type, size: file.size } : null,
     };
   };
+
+  /*
+    Отправка на сервер. Адрес берем из action формы — он один для HTML и JavaScript.
+    Content-Type сообщает PHP, что в теле JSON: такой запрос читают из php://input, а не из $_POST.
+    API отвечает JSON и при успехе (201), и при ошибке проверки (422), поэтому тело читаем в обоих случаях.
+  */
+  const saveRecipe = async (recipe) => {
+    const response = await fetch(recipeForm.action, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(recipe),
+    });
+
+    // Если PHP упал до отправки JSON (например, синтаксическая ошибка), тело — не JSON: data будет null.
+    const data = await response.json().catch(() => null);
+
+    return { status: response.status, data };
+  };
+
+  let isSaving = false;
 
   recipeForm.addEventListener('input', checkCustomRules);
   recipeForm.addEventListener('change', checkCustomRules);
   enableLiveValidation(recipeForm);
 
-  recipeForm.addEventListener('submit', (event) => {
+  recipeForm.addEventListener('submit', async (event) => {
     event.preventDefault();
+
+    // Повторное нажатие, пока ждем ответ, не должно создать второй такой же рецепт.
+    if (isSaving) {
+      return;
+    }
+
     checkCustomRules();
 
     const firstInvalid = validateForm(recipeForm);
@@ -681,10 +807,37 @@ if (recipeForm && recipePreview && recipeJson) {
       return;
     }
 
-    // JSON.stringify с отступом 2 делает объект читаемым; textContent вставляет его как текст.
-    recipeJson.textContent = JSON.stringify(collectRecipe(), null, 2);
-    recipePreview.hidden = false;
-    status.textContent = 'Рецепт прошел проверку. Ниже — данные, которые форма отправит на сервер.';
+    isSaving = true;
+    submitButton?.setAttribute('aria-disabled', 'true');
+    status.textContent = 'Сохраняем рецепт…';
+
+    try {
+      const { status: code, data } = await saveRecipe(collectRecipe());
+
+      if (code === 201 && data) {
+        // reset очищает поля, а обработчик reset ниже — сообщения и старый ответ.
+        recipeForm.reset();
+        recipeJson.textContent = JSON.stringify(data, null, 2);
+        recipePreview.hidden = false;
+        status.textContent = `Рецепт «${data.title}» сохранен`;
+        loadRecentRecipes();
+      } else if (code === 422 && data && data.errors) {
+        // Браузерную проверку прошли, но сервер нашел ошибки: показываем их у полей.
+        recipePreview.hidden = true;
+        status.textContent = 'Сервер не принял данные: исправьте отмеченные поля.';
+        showServerErrors(recipeForm, data.errors)?.focus();
+      } else {
+        throw new Error(`Сервер ответил ${code}${data && data.error ? `: ${data.error}` : ''}`);
+      }
+    } catch (error) {
+      // Сеть недоступна, сервер вернул 500 или не JSON. Введенные данные остаются в форме.
+      console.error('Не удалось сохранить рецепт:', error);
+      recipePreview.hidden = true;
+      status.textContent = 'Не удалось сохранить рецепт. Данные формы на месте — попробуйте еще раз.';
+    } finally {
+      isSaving = false;
+      submitButton?.removeAttribute('aria-disabled');
+    }
   });
 
   // Кнопка «Очистить» (type="reset") очищает поля; сообщения и предпросмотр убираем сами.
