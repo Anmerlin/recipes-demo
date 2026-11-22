@@ -1,7 +1,7 @@
-// Окружение практики №7: PHP 8.3 + MariaDB 11.4 + phpMyAdmin.
+// Окружение практики №7: PHP 8.4 + MySQL 8.4 + phpMyAdmin.
 // Скопируйте папку .devcontainer в корень своего репозитория и откройте Codespace.
 {
-  "name": "PHP + MariaDB (Web-программирование)",
+  "name": "PHP + MySQL (Web-программирование)",
   "dockerComposeFile": "docker-compose.yml",
   "service": "app",
   "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
