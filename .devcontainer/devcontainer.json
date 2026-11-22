@@ -1,0 +1,21 @@
+// Окружение практики №7: PHP 8.3 + MariaDB 11.4 + phpMyAdmin.
+// Скопируйте папку .devcontainer в корень своего репозитория и откройте Codespace.
+{
+  "name": "PHP + MariaDB (Web-программирование)",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "app",
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+
+  // 8080 — сайт (php -S 0.0.0.0:8080), 8081 — phpMyAdmin.
+  "forwardPorts": [8080, 8081],
+  "portsAttributes": {
+    "8080": { "label": "Сайт (php -S)", "onAutoForward": "notify" },
+    "8081": { "label": "phpMyAdmin", "onAutoForward": "silent" }
+  },
+
+  "customizations": {
+    "vscode": {
+      "extensions": ["bmewburn.vscode-intelephense-client"]
+    }
+  }
+}
