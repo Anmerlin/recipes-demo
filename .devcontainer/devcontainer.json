@@ -7,10 +7,13 @@
   "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
 
   // 8080 — сайт (php -S 0.0.0.0:8080), 8081 — phpMyAdmin.
-  "forwardPorts": [8080, "db:8081"],
+  // 8081 не пробрасывается заранее: phpMyAdmin работает в соседнем контейнере,
+  // и ранний проброс до его запуска отвечал 502. Codespaces пробрасывает порт сам,
+  // когда phpMyAdmin начинает его слушать; подпись берется из portsAttributes.
+  "forwardPorts": [8080],
   "portsAttributes": {
     "8080": { "label": "Сайт (php -S)", "onAutoForward": "notify" },
-    "db:8081": { "label": "phpMyAdmin", "onAutoForward": "silent" }
+    "8081": { "label": "phpMyAdmin", "onAutoForward": "silent" }
   },
 
   "customizations": {
