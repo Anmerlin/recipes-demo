@@ -1,0 +1,40 @@
+# Учебное окружение для GitHub Codespaces: PHP 8.4, MySQL 8.4 и phpMyAdmin.
+# Все три контейнера работают в одной сетевой среде (network_mode: service:db),
+# поэтому из PHP база доступна по адресу 127.0.0.1:3306 — как в OpenServer.
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ../..:/workspaces:cached
+    # Контейнер не завершается сам: в нем работает редактор и терминал.
+    command: sleep infinity
+    network_mode: service:db
+
+  db:
+    image: mysql:8.4
+    restart: unless-stopped
+    volumes:
+      - mysql-data:/var/lib/mysql
+    environment:
+      # Учебная база внутри Codespace, снаружи недоступна.
+      # Пользователь root с пустым паролем — как в OpenServer, поэтому
+      # config/config.example.php подходит без изменений.
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+
+  phpmyadmin:
+    image: phpmyadmin:5
+    restart: unless-stopped
+    network_mode: service:db
+    depends_on:
+      - db
+    environment:
+      PMA_HOST: 127.0.0.1
+      PMA_PORT: "3306"
+      # phpMyAdmin слушает 8081, чтобы не занимать порт 8080 сайта.
+      APACHE_PORT: "8081"
+
+volumes:
+  mysql-data:

@@ -1,0 +1,23 @@
+// Окружение практики №7: PHP 8.4 + MySQL 8.4 + phpMyAdmin.
+// Скопируйте папку .devcontainer в корень своего репозитория и откройте Codespace.
+{
+  "name": "PHP + MySQL (Web-программирование)",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "app",
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+
+  // 8080 — сайт (php -S 0.0.0.0:8080), 8081 — phpMyAdmin.
+  // 8081 (phpMyAdmin) не пробрасывается заранее: он работает в соседнем контейнере,
+  // и ранний проброс отвечал 502. Добавьте порт вручную: вкладка Ports → Add Port → 8081.
+  "forwardPorts": [8080],
+  "portsAttributes": {
+    "8080": { "label": "Сайт (php -S)", "onAutoForward": "notify" },
+    "8081": { "label": "phpMyAdmin", "onAutoForward": "silent" }
+  },
+
+  "customizations": {
+    "vscode": {
+      "extensions": ["bmewburn.vscode-intelephense-client"]
+    }
+  }
+}

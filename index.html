@@ -74,7 +74,7 @@
           </div>
 
           <!--
-            Карточки категорий приходят из data/categories.json (fetch в scripts/script.js).
+            Карточки категорий приходят из базы данных через API api/categories.php (fetch в scripts/script.js).
             Пока данные загружаются или если запрос не удался, вместо списка видно сообщение.
           -->
           <ul class="categories__list" data-categories-list></ul>
@@ -188,13 +188,13 @@
       <section class="add-recipe" id="add-recipe" aria-labelledby="add-recipe-title">
         <div class="container add-recipe__inner">
           <h2 class="section-title" id="add-recipe-title">Добавить рецепт</h2>
-          <p class="section-lead add-recipe__lead">Заполните карточку рецепта. Пока сервер не подключен, под формой появятся данные, которые она отправит.</p>
+          <p class="section-lead add-recipe__lead">Заполните карточку рецепта. Форма отправит данные на сервер, сервер проверит их еще раз и сохранит рецепт в базе данных.</p>
 
           <!--
-            action и method описывают будущую отправку на сервер.
-            Сейчас скрипт отменяет отправку, проверяет поля и показывает собранные данные в формате JSON.
+            action и method — адрес и метод серверного API. Скрипт отменяет обычную отправку,
+            проверяет поля, собирает объект и отправляет его через fetch в формате JSON на тот же action.
           -->
-          <form class="form add-recipe__form" action="/api/recipes" method="post" enctype="multipart/form-data" novalidate data-recipe-form>
+          <form class="form add-recipe__form" action="api/recipes.php" method="post" novalidate data-recipe-form>
             <div class="form__field" data-field>
               <label class="form__label" for="recipe-title">Название</label>
               <input
@@ -213,7 +213,7 @@
             <div class="form__row">
               <div class="form__field" data-field>
                 <label class="form__label" for="recipe-category">Категория</label>
-                <!-- Варианты берутся из того же data/categories.json, что и карточки категорий. -->
+                <!-- Варианты берутся из того же api/categories.php, что и карточки категорий. -->
                 <select class="form__input form__select" id="recipe-category" name="category" required aria-describedby="recipe-category-hint recipe-category-error" data-category-select>
                   <option value="">Выберите категорию</option>
                 </select>
@@ -283,21 +283,44 @@
                 accept="image/png, image/jpeg, image/webp"
                 aria-describedby="recipe-photo-hint recipe-photo-error"
               >
-              <p class="form__hint" id="recipe-photo-hint">PNG, JPEG или WebP, до 2 МБ</p>
+              <p class="form__hint" id="recipe-photo-hint">PNG, JPEG или WebP, до 2 МБ. Пока проверяется только в браузере: загрузка файлов на сервер — следующий этап.</p>
               <p class="form__error" id="recipe-photo-error" data-error></p>
             </div>
 
             <p class="form__status" role="status" data-form-status></p>
 
             <div class="form__actions">
-              <button class="button" type="submit">Проверить и подготовить</button>
+              <button class="button" type="submit" data-recipe-submit>Сохранить рецепт</button>
               <button class="button button--outline" type="reset">Очистить</button>
             </div>
           </form>
 
           <section class="add-recipe__preview" aria-labelledby="recipe-preview-title" data-recipe-preview hidden>
-            <h3 class="add-recipe__preview-title" id="recipe-preview-title">Данные для отправки на сервер</h3>
+            <h3 class="add-recipe__preview-title" id="recipe-preview-title">Ответ сервера</h3>
             <pre class="add-recipe__json"><code data-recipe-json></code></pre>
+          </section>
+
+          <!-- Последние рецепты из базы: GET api/recipes.php, тот же приём с <template>, что у категорий. -->
+          <section class="recent-recipes" aria-labelledby="recent-recipes-title">
+            <h3 class="recent-recipes__title" id="recent-recipes-title">Новые рецепты</h3>
+            <ul class="recent-recipes__list" data-recipes-list></ul>
+            <div class="recent-recipes__state">
+              <p class="recent-recipes__status" role="status" data-recipes-status></p>
+              <button class="button button--outline" type="button" data-recipes-retry hidden>Повторить</button>
+            </div>
+            <p class="recent-recipes__catalog">
+              <a href="catalog.php">Весь каталог</a> — та же база, но страницу собирает сервер, без JavaScript.
+            </p>
+
+            <template id="recipe-item-template">
+              <li class="recipe-item">
+                <article>
+                  <h4 class="recipe-item__title"></h4>
+                  <p class="recipe-item__meta"></p>
+                  <ul class="recipe-item__ingredients"></ul>
+                </article>
+              </li>
+            </template>
           </section>
         </div>
       </section>
